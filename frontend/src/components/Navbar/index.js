@@ -8,8 +8,9 @@ import {
   NavMenu,
   NavItem,
   NavLinks,
-  NavBtn, 
+  NavBtn,
   NavBtnLink,
+  NavIcon,
 } from "./NavbarElements";
 
 const Navbar = () => {
@@ -17,7 +18,9 @@ const Navbar = () => {
     <>
       <Nav>
         <NavbarContainer>
-          <NavLogo to="/">Planytime</NavLogo>
+          <NavIcon to="/">
+            <NavLogo to="/">Planytime</NavLogo>
+          </NavIcon>
           <MobileIcon>
             <FaBars />
           </MobileIcon>
