@@ -11,7 +11,7 @@ import {
 } from "./InfoElements";
 import Video from "../../videos/video.mp4";
 import { useState } from "react";
-import {Button} from "../ButtonElement";
+import { Button } from "../ButtonElement";
 
 const InfoSection = () => {
   const [hover, setHover] = useState(false);
