@@ -3,8 +3,13 @@ import Navbar from "../components/Navbar";
 import InfoSection from "../components/InfoSection";
 import AboutSection from "../components/AboutSection";
 import Services from "../components/Services";
+import Footer from "../components/Footer";
 import { useState } from "react";
-import { homeObjOne, homeObjTwo, homeObjThree } from "../components/AboutSection/Data";
+import {
+  homeObjOne,
+  homeObjTwo,
+  homeObjThree,
+} from "../components/AboutSection/Data";
 
 const Home = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,8 +25,9 @@ const Home = () => {
       <InfoSection />
       <AboutSection {...homeObjOne} />
       <AboutSection {...homeObjTwo} />
-      <Services/>
+      <Services />
       <AboutSection {...homeObjThree} />
+      <Footer />
     </>
   );
 };
