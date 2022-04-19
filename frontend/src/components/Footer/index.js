@@ -14,9 +14,15 @@ import {
   SocialIconLink,
 } from "./FooterElements";
 
+import { animateScroll as scroll } from "react-scroll";
+
 import { FaFacebook, FaInstagram, FaYoutube, FaLinkedin } from "react-icons/fa";
 
 const Footer = () => {
+  const toggleHome = () => {
+    scroll.scrollToTop();
+  };
+
   return (
     <FooterContainer>
       <FooterWrap>
@@ -61,7 +67,9 @@ const Footer = () => {
         </FooterLinksContainer>
         <SocailMedia>
           <SocialMediaWrap>
-            <SocialLogo to="/">Planytime</SocialLogo>
+            <SocialLogo to="/" onClick={toggleHome}>
+              Planytime
+            </SocialLogo>
             <WebsiteRights>
               Planytime © {new Date().getFullYear()}
               All rights reserved.
