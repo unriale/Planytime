@@ -10,13 +10,14 @@ import {
   FormButton,
   Icon,
   FormIcon,
-} from "./SigninElements";
+} from "../SignIn/SigninElements";
 
 import { useState } from "react";
 
-const SignIn = () => {
+const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
 
   const emailHandler = (e) => {
     setEmail(e.target.value);
@@ -26,7 +27,11 @@ const SignIn = () => {
     setPassword(e.target.value);
   };
 
-  const signIn = async (e) => {
+  const usernameHandler = (e) => {
+    setUsername(e.target.value);
+  };
+
+  const signUp = async (e) => {
     e.preventDefault();
 
     const requestOptions = {
@@ -35,6 +40,7 @@ const SignIn = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
+        username: username,
         email: email,
         password: password,
       }),
@@ -42,9 +48,9 @@ const SignIn = () => {
 
     console.log(requestOptions);
 
-    const api_url = await fetch(`http://127.0.0.1:8000/login`, requestOptions);
-    const data = await api_url.json();
-    console.log(data);
+    // const api_url = await fetch(`http://127.0.0.1:8000/login`, requestOptions);
+    // const data = await api_url.json();
+    // console.log(data);
   };
 
   return (
@@ -53,15 +59,16 @@ const SignIn = () => {
         <FormWrap>
           <Icon to="/">Planytime</Icon>
           <FormContent>
-            <Form action="#" onSubmit={signIn}>
+            <Form action="#" onSubmit={signUp}>
               <FormIcon></FormIcon>
-              <FormH1>Sign in your account</FormH1>
-              <FormLabel htmlFor="for">Email</FormLabel>
+              {/* <FormH1>Sign Up</FormH1> */}
+              <FormLabel htmlFor="username">Username</FormLabel>
+              <FormInput type="text" required onChange={usernameHandler} />
+              <FormLabel htmlFor="email">Email</FormLabel>
               <FormInput type="email" required onChange={emailHandler} />
-              <FormLabel htmlFor="for">Password</FormLabel>
+              <FormLabel htmlFor="password">Password</FormLabel>
               <FormInput type="password" required onChange={passwordHandler} />
-              <FormButton type="submit">Continue</FormButton>
-              <Text>Forgot password?</Text>
+              <FormButton type="submit">Sign Up</FormButton>
             </Form>
           </FormContent>
         </FormWrap>
@@ -70,4 +77,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default SignUp;

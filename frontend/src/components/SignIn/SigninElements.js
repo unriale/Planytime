@@ -91,7 +91,6 @@ export const FormIcon = styled.h1`
 
   @media screen and (max-width: 480px) {
     margin-left: 0;
-    
   }
 `;
 
@@ -116,6 +115,10 @@ export const FormButton = styled.button`
   color: #fff;
   font-size: 20px;
   cursor: pointer;
+
+  &:hover {
+    background: #5eb4b7;
+  }
 `;
 
 export const Text = styled.span`

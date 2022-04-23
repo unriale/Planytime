@@ -32,7 +32,7 @@ const InfoSection = () => {
           This is some more text planning hey go with me.
         </InfoP>
         <InfoBtnWrapper>
-          <Button to="signup" onMouseEnter={onHover} onMouseLeave={onHover}>
+          <Button to="/signup" onMouseEnter={onHover} onMouseLeave={onHover}>
             Get started {hover ? <ArrowForward /> : <ArrowRight />}
           </Button>
         </InfoBtnWrapper>

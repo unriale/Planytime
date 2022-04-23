@@ -29,6 +29,7 @@ const AboutSection = ({
   primary,
   dark,
   dark2,
+  to,
 }) => {
   return (
     <>
@@ -42,7 +43,7 @@ const AboutSection = ({
                 <Subtitle darkText={darkText}>{description}</Subtitle>
                 <BtnWrap>
                   <Button
-                    to="home"
+                    to={to}
                     smooth={true}
                     duration={500}
                     spy={true}

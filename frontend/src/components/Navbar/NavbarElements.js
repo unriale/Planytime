@@ -2,9 +2,10 @@ import styled from "styled-components";
 import { Link as LinkR } from "react-router-dom";
 import { Link as LinkS } from "react-scroll";
 import Logo from "../../images/logo.png";
+import { FaRegBell } from "react-icons/fa";
 
 export const Nav = styled.nav`
-  background: ${({ scrollNav }) => (scrollNav ? "#000" : "transparent")};
+  background: ${({ scrollNav }) => (scrollNav ? "#000" : "#00000080")};
   height: 80px;
   margin-top: -80px;
   display: flex;
