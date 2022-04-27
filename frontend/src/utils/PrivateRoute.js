@@ -1,11 +1,11 @@
 import UserPage from "../pages/userPage";
-import Home from "../pages/index";
 import { Navigate } from "react-router-dom";
 import { useContext } from "react";
 import AuthContext from "../context/AuthContext";
 
 const PrivateRoute = ({ Component }) => {
   let { user } = useContext(AuthContext);
+  console.log("Private Route");
   if (Component.type.name === "Home") {
     return user ? <UserPage /> : Component;
   }

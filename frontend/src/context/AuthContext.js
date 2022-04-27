@@ -6,8 +6,16 @@ const AuthContext = createContext();
 export default AuthContext;
 
 export const AuthProvider = ({ children }) => {
-  let [user, setUser] = useState(null);
-  let [authTokens, setAuthTokens] = useState(null);
+  let [authTokens, setAuthTokens] = useState(() =>
+    localStorage.getItem("authTokens")
+      ? JSON.parse(localStorage.getItem("authTokens"))
+      : null
+  );
+  let [user, setUser] = useState(() =>
+    localStorage.getItem("authTokens")
+      ? jwt_decode(localStorage.getItem("authTokens"))
+      : null
+  );
 
   let loginUser = async (e) => {
     e.preventDefault();
@@ -27,14 +35,22 @@ export const AuthProvider = ({ children }) => {
     if (response.status == 200) {
       setAuthTokens(data);
       setUser(jwt_decode(data.access));
+      localStorage.setItem("authTokens", JSON.stringify(data));
     } else {
       alert("Something went wrong");
     }
   };
 
+  let logoutUser = () => {
+    setAuthTokens(null);
+    setUser(null);
+    localStorage.removeItem("authTokens");
+  };
+
   let contextData = {
     user: user,
     loginUser: loginUser,
+    logoutUser: logoutUser,
   };
 
   return (
