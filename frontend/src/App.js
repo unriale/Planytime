@@ -4,12 +4,14 @@ import { Routes, Route } from "react-router-dom";
 import Home from "./pages/index";
 import SigninPage from "./pages/signin";
 import SignupPage from "./pages/signup";
+import UserPage from "./pages/userPage";
 
 import { AuthProvider } from "./context/AuthContext";
 
 import PrivateRoute from "./utils/PrivateRoute";
 
 function App() {
+  console.log("App call");
   return (
     <Router>
       <AuthProvider>
@@ -27,6 +29,10 @@ function App() {
           <Route
             path="/signup"
             element={<PrivateRoute Component={<SignupPage />} />}
+          />
+          <Route
+            path="/signsp"
+            element={<PrivateRoute Component={<UserPage />} />}
           />
         </Routes>
       </AuthProvider>

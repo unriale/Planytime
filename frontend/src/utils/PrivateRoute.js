@@ -5,8 +5,9 @@ import AuthContext from "../context/AuthContext";
 
 const PrivateRoute = ({ Component }) => {
   let { user } = useContext(AuthContext);
-  console.log("Private Route");
+  console.log("PRIVATE ROUTE, USER = ", user);
   if (Component.type.name === "Home") {
+    console.log("IN PRIVATE ROOT, HOME");
     return user ? <UserPage /> : Component;
   }
   return user ? <Navigate to={"/"} /> : Component;
