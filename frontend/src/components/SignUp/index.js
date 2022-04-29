@@ -3,10 +3,8 @@ import {
   FormWrap,
   Container,
   Form,
-  FormH1,
   FormInput,
   FormLabel,
-  Text,
   FormButton,
   Icon,
   FormIcon,
@@ -46,11 +44,16 @@ const SignUp = () => {
       }),
     };
 
-    console.log(requestOptions);
+    const response = await fetch(
+      `http://127.0.0.1:8000/signup/`,
+      requestOptions
+    );
 
-    // const api_url = await fetch(`http://127.0.0.1:8000/login`, requestOptions);
-    // const data = await api_url.json();
-    // console.log(data);
+    const data = await response.json();
+
+    if(response.status === 200){
+
+    }
   };
 
   return (
@@ -61,13 +64,12 @@ const SignUp = () => {
           <FormContent>
             <Form action="#" onSubmit={signUp}>
               <FormIcon></FormIcon>
-              {/* <FormH1>Sign Up</FormH1> */}
               <FormLabel htmlFor="username">Username</FormLabel>
-              <FormInput type="text" required onChange={usernameHandler} />
+              <FormInput name="username" type="text" required onChange={usernameHandler} />
               <FormLabel htmlFor="email">Email</FormLabel>
-              <FormInput type="email" required onChange={emailHandler} />
+              <FormInput name="email" type="email" required onChange={emailHandler} />
               <FormLabel htmlFor="password">Password</FormLabel>
-              <FormInput type="password" required onChange={passwordHandler} />
+              <FormInput name="password" type="password" required onChange={passwordHandler} />
               <FormButton type="submit">Sign Up</FormButton>
             </Form>
           </FormContent>

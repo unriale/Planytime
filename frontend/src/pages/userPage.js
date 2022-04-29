@@ -1,5 +1,6 @@
 import { useContext, useState, useEffect } from "react";
 import AuthContext from "../context/AuthContext";
+import Sidebar from "../components/User/Sidebar/Sidebar";
 
 const UserPage = () => {
   let { logoutUser, authTokens } = useContext(AuthContext);
@@ -20,18 +21,17 @@ const UserPage = () => {
 
     let data = await response.json();
 
-    if(response.status === 200){
-        setNotes(data);
+    if (response.status === 200) {
+      setNotes(data);
+    } else if (response.statusText === "Unauthorized") {
+      logoutUser();
     }
-    else if(response.statusText === "Unauthorized"){
-        logoutUser();
-    }
-    
   };
 
   return (
     <div>
-      <p>User page, hello</p>
+      <Sidebar />
+      <p>User page, hecllo</p>
       <ul>
         {notes.map((note) => (
           <li key={note.id}>{note.body}</li>
