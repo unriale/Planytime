@@ -4,6 +4,7 @@ import { Routes, Route } from "react-router-dom";
 import Home from "./pages/index";
 import SigninPage from "./pages/signin";
 import SignupPage from "./pages/signup";
+import Stats from "./components/User/Stats/Stats";
 
 import { AuthProvider } from "./context/AuthContext";
 
@@ -28,6 +29,7 @@ function App() {
             path="/signup"
             element={<PrivateRoute Component={<SignupPage />} />}
           />
+          <Route path="/stats" element={<Stats/>}/>
         </Routes>
       </AuthProvider>
     </Router>
