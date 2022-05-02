@@ -23,11 +23,10 @@ const SidebarLabel = styled.span`
   margin-left: 16px;
 `;
 
-const SubMenu = ({ item }) => {
- 
+const SubMenu = ({ item, showSidebar }) => {
   return (
     <>
-      <SidebarLink to={item.path}>
+      <SidebarLink to={item.path} onClick={showSidebar}>
         <div>
           {item.icon}
           <SidebarLabel>{item.title}</SidebarLabel>

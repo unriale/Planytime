@@ -56,13 +56,17 @@ const Sidebar = () => {
   const showSidebar = () => setSidebar(!sidebar);
 
   const openLogoutModal = () => {
+    showSidebar();
     setShowLogoutModal((prev) => !prev); // toggle
   };
 
   return (
     <>
       <IconContext.Provider value={{ color: "#fff" }}>
-        <ModalLogout showModal={showLogoutModal} setShowModal={setShowLogoutModal}/>
+        <ModalLogout
+          showModal={showLogoutModal}
+          setShowModal={setShowLogoutModal}
+        />
         <Nav>
           <NavIcon to="#">
             <FaIcons.FaBars onClick={showSidebar} />
@@ -75,7 +79,7 @@ const Sidebar = () => {
             </NavIcon>
             {SidebarData.map((item, index) => {
               if (index < SidebarData.length - 1) {
-                return <SubMenu item={item} key={index} />;
+                return <SubMenu item={item} key={index} showSidebar={showSidebar}/>;
               } else {
                 return (
                   <>
