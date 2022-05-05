@@ -1,13 +1,11 @@
-
 import Sidebar from "../components/User/Sidebar/Sidebar";
-import Calendar from "../components/User/Calendar/Calendar";
+import MyCalendar from "../components/User/Calendar/Calendar";
 
 const UserPage = () => {
-
   return (
     <div>
       <Sidebar />
-      <Calendar/>
+      <MyCalendar />
       <p>User page</p>
       {/* <p>User page, hecllo</p>
       <ul>
