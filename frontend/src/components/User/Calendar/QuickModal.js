@@ -1,5 +1,7 @@
 import { Component } from "react";
 import moment from "moment";
+import ColorPicker from "./ColorPicker";
+
 import {
   Input,
   Label,
@@ -17,6 +19,9 @@ class QuickModal extends Component {
     inEditMode: false,
     addEventTitle: "Add to Your Schedule",
     editEventTitle: "Edit Your Saved Event",
+    headerTextColor: "white",
+    defaultBgColor: "#5484ed",
+    modalHeaderColor: "",
     title: "",
     validation: {
       color: true,
@@ -24,6 +29,16 @@ class QuickModal extends Component {
       pleasePickADay: false,
       title: true,
     },
+  };
+
+  setSelectedColor = (colorTypeId) => {
+    this.setState({ colorTypeId });
+    this.updateModalBgColor(colorTypeId);
+  };
+
+  updateModalBgColor = (id) => {
+    let modalHeaderColor = this.props.colorIndex[id].color;
+    this.setState({ modalHeaderColor });
   };
 
   render() {
@@ -59,16 +74,27 @@ class QuickModal extends Component {
           }}
         >
           <ListGroup>
-            <Label>Event Name</Label>
-            <Input
-              type="text"
-              name="title"
-              value={this.state.title}
-              invalid={!this.state.validation.title}
-              onChange={(e) => {
-                this.setState({ [e.target.name]: [e.target.value] });
-              }}
-            />
+            <FormGroup>
+              <Label>Event Name</Label>
+              <Input
+                type="text"
+                name="title"
+                value={this.state.title}
+                invalid={!this.state.validation.title}
+                onChange={(e) => {
+                  this.setState({ [e.target.name]: [e.target.value] });
+                }}
+              />
+            </FormGroup>
+
+            <FormGroup>
+              <ColorPicker
+                colorList={this.props.googleColors}
+                selectedColor={this.state.modalHeaderColor}
+                defaultColor={this.state.defaultBgColor}
+                setSelectedColor={this.setSelectedColor}
+              />
+            </FormGroup>
           </ListGroup>
         </ModalBody>
       </Modal>

@@ -5,12 +5,27 @@ import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
 import Modal from "../../Modals/GenericModal";
 import Guide from "./WelcomeGuide";
 import QuickModal from "./QuickModal";
+import googleColors from "./data/googleColors";
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const DragAndDropCalendar = withDragAndDrop(Calendar);
 const localizer = momentLocalizer(moment);
+
+const colorIndex = (colorTypes) => {
+  // transform array of colors into one object (to be used as an index for O(1) lookup)
+  const colorIndex = {};
+  const colorKeys = Object.keys(colorTypes[0]).filter((key) => key !== "id");
+  for (const color of colorTypes) {
+    const colorData = {};
+    colorKeys.forEach((key) => {
+      colorData[key] = color[key];
+    });
+    colorIndex[color.id] = colorData;
+  }
+  return colorIndex;
+};
 
 class MyCalendar extends Component {
   state = {
@@ -20,6 +35,7 @@ class MyCalendar extends Component {
     newEventStart: null,
     newEventEnd: null,
     createQuickModal: false,
+    colorIndex: colorIndex(googleColors),
   };
 
   componentDidMount() {
@@ -62,7 +78,12 @@ class MyCalendar extends Component {
           min={moment().hours(5).minutes(0).toDate()}
           onSelectSlot={this.slotSelectionHandler}
         />
-        <QuickModal modalOpen={this.state.createQuickModal} />
+
+        <QuickModal
+          modalOpen={this.state.createQuickModal}
+          googleColors={googleColors}
+          colorIndex={this.state.colorIndex}
+        />
         <Modal
           modalOpen={this.state.showGuideModal}
           toggle={this.closeGuideModal}
