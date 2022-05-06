@@ -34,7 +34,9 @@ const ColorPicker = ({
       >
         Event Color
       </DropdownToggle>
-      <DropdownMenu>
+      <DropdownMenu
+        style={{ width: "100px", height: "150px", overflow: "auto" }}
+      >
         {(colorList || []).map((color) => populateColors(color))}
       </DropdownMenu>
     </UncontrolledDropdown>
