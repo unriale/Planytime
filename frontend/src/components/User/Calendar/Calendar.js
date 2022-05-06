@@ -16,6 +16,9 @@ class MyCalendar extends Component {
     events: [],
     selectedEvent: {},
     showGuideModal: false,
+    newEventStart: null,
+    newEventEnd: null,
+    createQuickModal: false
   };
 
   componentDidMount() {
@@ -32,9 +35,33 @@ class MyCalendar extends Component {
 
   closeGuideModal = () => this.setState({ showGuideModal: false });
 
+  slotSelectionHandler = (slotInfo) => {
+    let newEventStart = parseInt(moment(slotInfo.start).format("x"));
+    let newEventEnd = parseInt(moment(slotInfo.end).format("x"));
+    alert(newEventStart);
+
+    this.setState({
+      newEventStart,
+      newEventEnd,
+      createQuickModal: true,
+    });
+  };
+
   render() {
     return (
       <div>
+        <DragAndDropCalendar
+          style={{ flex: 1, minHeight: "90vh", margin: "10px" }}
+          selectable={true}
+          event={this.state.events}
+          localizer={localizer}
+          defaultView="day"
+          views={["week", "day", "agenda"]}
+          step={15}
+          timeslots={4}
+          min={moment().hours(5).minutes(0).toDate()}
+          onSelectSlot={this.slotSelectionHandler}
+        />
         <Modal
           modalOpen={this.state.showGuideModal}
           toggle={this.closeGuideModal}
