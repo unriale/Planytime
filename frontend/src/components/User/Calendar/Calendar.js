@@ -4,6 +4,7 @@ import moment from "moment";
 import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
 import Modal from "../../Modals/GenericModal";
 import Guide from "./WelcomeGuide";
+import QuickModal from "./QuickModal";
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -18,7 +19,7 @@ class MyCalendar extends Component {
     showGuideModal: false,
     newEventStart: null,
     newEventEnd: null,
-    createQuickModal: false
+    createQuickModal: false,
   };
 
   componentDidMount() {
@@ -38,7 +39,6 @@ class MyCalendar extends Component {
   slotSelectionHandler = (slotInfo) => {
     let newEventStart = parseInt(moment(slotInfo.start).format("x"));
     let newEventEnd = parseInt(moment(slotInfo.end).format("x"));
-    alert(newEventStart);
 
     this.setState({
       newEventStart,
@@ -62,6 +62,7 @@ class MyCalendar extends Component {
           min={moment().hours(5).minutes(0).toDate()}
           onSelectSlot={this.slotSelectionHandler}
         />
+        <QuickModal modalOpen={this.state.createQuickModal} />
         <Modal
           modalOpen={this.state.showGuideModal}
           toggle={this.closeGuideModal}
