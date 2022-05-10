@@ -83,6 +83,8 @@ class MyCalendar extends Component {
           modalOpen={this.state.createQuickModal}
           googleColors={googleColors}
           colorIndex={this.state.colorIndex}
+          start={this.state.newEventStart}
+          end={this.state.newEventEnd}
         />
         <Modal
           modalOpen={this.state.showGuideModal}

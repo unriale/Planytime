@@ -27,7 +27,7 @@ const ColorPicker = ({
   };
 
   return (
-    <UncontrolledDropdown style={{ marginTop: "1.5em" }}>
+    <UncontrolledDropdown>
       <DropdownToggle
         caret
         style={{ backgroundColor: selectedColor || defaultColor }}
