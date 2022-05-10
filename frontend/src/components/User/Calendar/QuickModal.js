@@ -60,6 +60,7 @@ class QuickModal extends Component {
             position: "relative",
             paddingTop: "2em",
             width: "100%",
+            backgroundColor: this.state.modalHeaderColor || this.state.defaultBgColor,
           }}
         >
           {this.state.inEditMode

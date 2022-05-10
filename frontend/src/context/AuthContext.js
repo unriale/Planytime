@@ -54,8 +54,8 @@ export const AuthProvider = ({ children }) => {
   };
 
   let updateToken = async () => {
-    console.log("----> UpdateToken called");
-    console.log("authTokens = " + authTokens);
+    // console.log("----> UpdateToken called");
+    // console.log("authTokens = " + authTokens);
 
     let response = await fetch("http://localhost:8000/api/token/refresh/", {
       method: "POST",
@@ -66,18 +66,18 @@ export const AuthProvider = ({ children }) => {
     });
     let data = await response.json();
 
-    console.log("---> Data: ", data);
+    // console.log("---> Data: ", data);
 
     if (response.status === 200) {
-      console.log("Access token as well as refresh token are updated");
+      // console.log("Access token as well as refresh token are updated");
       setAuthTokens(data);
       setUser(jwt_decode(data.access));
       localStorage.setItem("authTokens", JSON.stringify(data));
     } else {
-      console.log("Something wrong with a refresh token");
+      // console.log("Something wrong with a refresh token");
       logoutUser();
     }
-    console.log("Loading is set to false");
+    // console.log("Loading is set to false");
     setLoading(false);
   };
 
@@ -89,9 +89,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    console.log("useEffect fire once");
+    // console.log("useEffect fire once");
     if (loading) {
-      console.log("Loading is true");
+      // console.log("Loading is true");
       updateToken();
     }
     let fourMinutes = 1000 * 60 * 4;
