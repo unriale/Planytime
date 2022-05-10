@@ -1,6 +1,8 @@
 import { Component } from "react";
 import moment from "moment";
 import ColorPicker from "./ColorPicker";
+import MultiDayPicker from "./MultiDayPicker";
+import daysOfWeek from "./data/daysOfWeek";
 
 import {
   Input,
@@ -16,6 +18,8 @@ import {
 
 class QuickModal extends Component {
   state = {
+    selectedDays: [],
+    dayOfWeek: "",
     inEditMode: false,
     addEventTitle: "Add to Your Schedule",
     editEventTitle: "Edit Your Saved Event",
@@ -41,13 +45,28 @@ class QuickModal extends Component {
     this.setState({ modalHeaderColor });
   };
 
+  setSelectedDays = (selectedDays) => {
+    this.setState({ selectedDays });
+    console.log("selectedDays = ", selectedDays);
+  };
+
+  renderDayPicker = () => {
+    return (
+      <MultiDayPicker
+        listOfDays={daysOfWeek}
+        dayOfWeek={this.state.dayOfWeek}
+        setSelectedDays={this.setSelectedDays}
+      />
+    );
+  };
+
   render() {
     const { modalOpen } = this.props;
     return (
       <Modal
         style={{
-          maxWidth: 400,
-          minWidth: "25em",
+          maxWidth: 380,
+          minWidth: "20em",
           position: "relative",
           top: "10", // original 25
         }}
@@ -60,7 +79,8 @@ class QuickModal extends Component {
             position: "relative",
             paddingTop: "2em",
             width: "100%",
-            backgroundColor: this.state.modalHeaderColor || this.state.defaultBgColor,
+            backgroundColor:
+              this.state.modalHeaderColor || this.state.defaultBgColor,
           }}
         >
           {this.state.inEditMode
@@ -96,6 +116,8 @@ class QuickModal extends Component {
                 setSelectedColor={this.setSelectedColor}
               />
             </FormGroup>
+
+            <FormGroup>{this.renderDayPicker()}</FormGroup>
           </ListGroup>
         </ModalBody>
       </Modal>

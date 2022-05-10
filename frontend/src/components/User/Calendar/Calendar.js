@@ -71,7 +71,7 @@ class MyCalendar extends Component {
           selectable={true}
           event={this.state.events}
           localizer={localizer}
-          defaultView="day"
+          defaultView="week"
           views={["week", "day", "agenda"]}
           step={15}
           timeslots={4}
