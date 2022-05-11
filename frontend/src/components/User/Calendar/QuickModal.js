@@ -14,7 +14,6 @@ import {
   Label,
   FormGroup,
   ListGroup,
-  ListGroupItem,
   Modal,
   ModalBody,
   ModalHeader,
@@ -35,9 +34,6 @@ class QuickModal extends Component {
     endTime: new Date(),
     title: "",
     validation: {
-      color: true,
-      pickedADay: false,
-      pleasePickADay: false,
       title: true,
     },
   };
@@ -83,9 +79,21 @@ class QuickModal extends Component {
     }
   }
 
+  validateTitle = () => {
+    const { validation, title } = this.state;
+    let titleNoExtraSpaces = title.toString().replace(/\s+/g, " ").trimLeft();
+    titleNoExtraSpaces.length > 0
+      ? (validation.title = true)
+      : (validation.title = false);
+    this.setState({ title: titleNoExtraSpaces, validation });
+  };
+
   validateInputs = () => {
-    console.log("Validating...");
-    this.props.onClose();
+    this.validateTitle();
+    // TEMP
+    if (this.state.validation.title) {
+      this.props.onClose();
+    }
   };
 
   render() {
@@ -129,12 +137,17 @@ class QuickModal extends Component {
               <Input
                 type="text"
                 name="title"
+                maxLength={100}
                 value={this.state.title}
                 invalid={!this.state.validation.title}
                 onChange={(e) => {
-                  this.setState({ [e.target.name]: [e.target.value] });
+                  this.setState({ [e.target.name]: [e.target.value] }, () => {
+                    this.validateTitle();
+                  });
                 }}
               />
+              <FormFeedback valid />
+              <FormFeedback>This field is required</FormFeedback>
             </FormGroup>
 
             <FormGroup>
