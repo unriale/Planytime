@@ -66,7 +66,11 @@ class MultiDayPicker extends Component {
           {(this.props.listOfDays || []).map((day) =>
             this.renderDayButton(day)
           )}
-          {this.props.valid && <div>valid input</div>}
+          {!this.props.valid && (
+            <div className="text-danger" style={{ fontSize: "14px" }}>
+              At least one day is required
+            </div>
+          )}
         </FormGroup>
       </div>
     );

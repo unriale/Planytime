@@ -35,6 +35,7 @@ class QuickModal extends Component {
     title: "",
     validation: {
       title: true,
+      pickedDays: true,
     },
   };
 
@@ -49,7 +50,9 @@ class QuickModal extends Component {
   };
 
   setSelectedDays = (selectedDays) => {
-    this.setState({ selectedDays });
+    this.setState({ selectedDays }, () => {
+      this.validateDays();
+    });
     console.log("selectedDays = ", selectedDays);
   };
 
@@ -59,7 +62,7 @@ class QuickModal extends Component {
         listOfDays={daysOfWeek}
         dayOfWeek={this.state.dayOfWeek}
         setSelectedDays={this.setSelectedDays}
-        valid={true}
+        valid={this.state.validation.pickedDays}
       />
     );
   };
@@ -68,7 +71,7 @@ class QuickModal extends Component {
     this.setState({
       startTime: this.props.start,
       endTime: this.props.end,
-      dayOfWeek: moment(this.props.start).format("e"), // day index 
+      dayOfWeek: moment(this.props.start).format("e"), // day index
     });
   };
 
@@ -90,10 +93,29 @@ class QuickModal extends Component {
     this.setState({ title: titleNoExtraSpaces, validation });
   };
 
+  validateDays = () => {
+    const { selectedDays, validation } = this.state;
+    selectedDays.length <= 0
+      ? (validation.pickedDays = false)
+      : (validation.pickedDays = true);
+    this.setState({ validation });
+  };
+
+  allValid = () => {
+    const { validation } = this.state;
+    if (validation.title && validation.pickedDays) {
+      return true;
+    }
+  };
+
   validateInputs = () => {
     this.validateTitle();
-    // TEMP
-    if (this.state.validation.title) {
+    this.validateDays();
+
+    if (this.allValid()) {
+      // send form to backend
+      // ...
+      // close the modal
       this.props.onClose();
     }
   };
