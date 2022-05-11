@@ -63,6 +63,13 @@ class MyCalendar extends Component {
     });
   };
 
+  closeModalHandler = () => {
+    this.setState({
+      createQuickModal: false,
+      selectedEvent: {},
+    });
+  };
+
   render() {
     return (
       <div>
@@ -85,6 +92,7 @@ class MyCalendar extends Component {
           colorIndex={this.state.colorIndex}
           start={this.state.newEventStart}
           end={this.state.newEventEnd}
+          onClose={this.closeModalHandler}
         />
         <Modal
           modalOpen={this.state.showGuideModal}

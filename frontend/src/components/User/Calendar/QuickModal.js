@@ -7,6 +7,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import setHours from "date-fns/setHours";
 import setMinutes from "date-fns/setMinutes";
+import { Button } from "reactstrap";
 
 import {
   Input,
@@ -82,6 +83,11 @@ class QuickModal extends Component {
     }
   }
 
+  validateInputs = () => {
+    console.log("Validating...");
+    this.props.onClose();
+  };
+
   render() {
     const { modalOpen } = this.props;
     return (
@@ -115,7 +121,6 @@ class QuickModal extends Component {
           style={{
             position: "relative",
             top: "1em",
-            marginBottom: "3rem",
           }}
         >
           <ListGroup>
@@ -199,6 +204,21 @@ class QuickModal extends Component {
                   dateFormat="h:mm aa"
                 />
               </div>
+            </FormGroup>
+
+            <FormGroup style={{ textAlign: "center" }}>
+              <Button
+                onClick={() => {
+                  this.validateInputs();
+                }}
+                style={{
+                  color: "white",
+                  background: "#4286f4",
+                  marginRight: "1rem",
+                }}
+              >
+                {this.state.inEditMode ? "Update" : "Add"}
+              </Button>
             </FormGroup>
           </ListGroup>
         </ModalBody>

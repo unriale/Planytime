@@ -12,6 +12,7 @@ const Background = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 10;
 `;
 
 const ModalWrapper = styled.div`
@@ -23,7 +24,6 @@ const ModalWrapper = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   position: relative;
-  z-index: 10;
   border-radius: 10px;
 `;
 
@@ -115,7 +115,7 @@ const ModalLogout = ({ showModal, setShowModal }) => {
               />
             </ModalWrapper>
           </Background>
-          {logout ? <Logout/> : null}
+          {logout ? <Logout /> : null}
         </IconContext.Provider>
       ) : null}
     </>
