@@ -36,6 +36,7 @@ class QuickModal extends Component {
     validation: {
       title: true,
       pickedDays: true,
+      endTime: true,
     },
   };
 
@@ -101,16 +102,26 @@ class QuickModal extends Component {
     this.setState({ validation });
   };
 
+  validateTime = () => {
+    let { validation, startTime, endTime } = this.state;
+    let startMinutes = startTime.getHours() * 60 + startTime.getMinutes();
+    let endMinutes = endTime.getHours() * 60 + endTime.getMinutes();
+
+    startMinutes >= endMinutes
+      ? (validation.endTime = false)
+      : (validation.endTime = true);
+    this.setState({ validation });
+  };
+
   allValid = () => {
     const { validation } = this.state;
-    if (validation.title && validation.pickedDays) {
-      return true;
-    }
+    return validation.title && validation.pickedDays && validation.endTime;
   };
 
   validateInputs = () => {
     this.validateTitle();
     this.validateDays();
+    this.validateTime();
 
     if (this.allValid()) {
       // send form to backend
@@ -200,8 +211,6 @@ class QuickModal extends Component {
                   selected={this.state.startTime}
                   onChange={(startTime) => {
                     if (startTime > this.state.endTime) {
-                      console.log("START TIME", startTime);
-                      console.log("this.state.endTime = ", this.state.endTime);
                       this.setState({
                         startTime,
                         endTime: moment(startTime).add(15, "m").toDate(),
@@ -231,7 +240,9 @@ class QuickModal extends Component {
               >
                 <DatePicker
                   selected={this.state.endTime}
-                  onChange={(endTime) => this.setState({ endTime })}
+                  onChange={(endTime) =>
+                    this.setState({ endTime }, () => this.validateTime())
+                  }
                   showTimeSelect
                   showTimeSelectOnly
                   timeIntervals={15}
@@ -241,6 +252,11 @@ class QuickModal extends Component {
                   dateFormat="h:mm aa"
                 />
               </div>
+              {!this.state.validation.endTime && (
+                <div className="text-danger" style={{ fontSize: "14px" }}>
+                  End time should be greater than start time
+                </div>
+              )}
             </FormGroup>
 
             <FormGroup style={{ textAlign: "center" }}>

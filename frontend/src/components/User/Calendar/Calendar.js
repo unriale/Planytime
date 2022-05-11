@@ -53,8 +53,8 @@ class MyCalendar extends Component {
   closeGuideModal = () => this.setState({ showGuideModal: false });
 
   slotSelectionHandler = (slotInfo) => {
-    let newEventStart = parseInt(moment(slotInfo.start).format("x"));
-    let newEventEnd = parseInt(moment(slotInfo.end).format("x"));
+    let newEventStart = slotInfo.start;
+    let newEventEnd = slotInfo.end;
 
     this.setState({
       newEventStart,
