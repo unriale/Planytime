@@ -22,16 +22,22 @@ class MultiDayPicker extends Component {
     return selectedDays;
   };
 
+  setDay = (day) => {
+    if (day) {
+      const index = parseInt(day, 10);
+      const selectedDay = this.props.listOfDays[index].name;
+      this.setState({ [selectedDay]: true });
+    }
+  };
+
+  componentDidMount() {
+    this.setDay(this.props.dayOfWeek);
+  }
+
   componentDidUpdate(prevProps, prevState) {
-    if (this.state != prevState) {
-      //   console.log("this.state != prevState");
-      //   console.log("this.state = ", this.state, "prevState = ", prevState);
+    if (this.state !== prevState) {
       let daysOfWeek = this.getSelectedDays();
       this.props.setSelectedDays(daysOfWeek);
-    }
-    if (this.props.dayOfWeek != prevProps.dayOfWeek) {
-      alert("this.props.dayOfWeek != prevProps.dayOfWeek");
-      console.log("this.props.dayOfWeek != prevProps.dayOfWeek");
     }
   }
 
@@ -42,7 +48,7 @@ class MultiDayPicker extends Component {
           type="checkbox"
           id={day.name}
           name={day.name}
-          //   checked={this.state[day.name] || false}
+          checked={this.state[day.name] || false}
           onChange={this.dayToggle}
         />
         <label htmlFor={day.name}>{day.letter}</label>
@@ -60,6 +66,7 @@ class MultiDayPicker extends Component {
           {(this.props.listOfDays || []).map((day) =>
             this.renderDayButton(day)
           )}
+          {this.props.valid && <div>valid input</div>}
         </FormGroup>
       </div>
     );

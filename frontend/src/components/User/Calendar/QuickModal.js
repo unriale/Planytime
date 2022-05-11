@@ -59,6 +59,7 @@ class QuickModal extends Component {
         listOfDays={daysOfWeek}
         dayOfWeek={this.state.dayOfWeek}
         setSelectedDays={this.setSelectedDays}
+        valid={true}
       />
     );
   };
@@ -67,6 +68,7 @@ class QuickModal extends Component {
     this.setState({
       startTime: this.props.start,
       endTime: this.props.end,
+      dayOfWeek: moment(this.props.start).format("e"), // day index 
     });
   };
 
