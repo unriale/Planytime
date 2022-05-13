@@ -8,6 +8,10 @@ import "react-datepicker/dist/react-datepicker.css";
 import setHours from "date-fns/setHours";
 import setMinutes from "date-fns/setMinutes";
 import { Button } from "reactstrap";
+import {
+  formatToDateString,
+  formatToTimeString,
+} from "../../../utils/dateTimeFormatter";
 
 import {
   Input,
@@ -25,6 +29,7 @@ class QuickModal extends Component {
     selectedDays: [],
     dayOfWeek: "",
     inEditMode: false,
+    colorTypeId: "9",
     addEventTitle: "Add to Your Schedule",
     editEventTitle: "Edit Your Saved Event",
     headerTextColor: "white",
@@ -32,6 +37,7 @@ class QuickModal extends Component {
     modalHeaderColor: "",
     startTime: new Date(),
     endTime: new Date(),
+    eventDate: new Date(),
     title: "",
     validation: {
       title: true,
@@ -118,17 +124,72 @@ class QuickModal extends Component {
     return validation.title && validation.pickedDays && validation.endTime;
   };
 
+  getFormData = () => {
+    let startTime = formatToTimeString(this.state.startTime);
+    let endTime = formatToTimeString(this.state.endTime);
+    let dayOfWeek = parseInt(this.state.dayOfWeek);
+    let colorTypeId = parseInt(this.state.colorTypeId);
+    let title = this.state.title;
+
+    const newEventData = {
+      startTime,
+      endTime,
+      colorTypeId,
+      title,
+      dayOfWeek,
+    };
+
+    return newEventData;
+  };
+
+  getDayIndex = (date) => {
+    let longDayName = date.toLocaleString("en-us", { weekday: "long" });
+    for (let day of daysOfWeek) {
+      if (day.name === longDayName) {
+        return day.id;
+      }
+    }
+    return null;
+  };
+
+  getStringDate = (thisDate, thisDayIndex, dayIndex) => {
+    if (thisDayIndex > dayIndex) {
+      let date = moment(
+        thisDate.setDate(thisDate.getDate() + (dayIndex - thisDayIndex))
+      );
+      return formatToDateString(date.toDate());
+    } else {
+      let date = moment(
+        thisDate.setDate(thisDate.getDate() - (thisDayIndex - dayIndex))
+      );
+      return formatToDateString(date.toDate());
+    }
+  };
+
+  handleSubmission = (event) => {
+    if (this.state.inEditMode) {
+      alert("Edit mode");
+    } else {
+      this.setState(
+        { eventDate: formatToDateString(this.state.startTime) },
+        () => {
+          let newEvents = this.state.selectedDays.map((dayIndex) => {
+            let thisDate = new Date(this.state.eventDate);
+            let thisDayIndex = this.getDayIndex(thisDate);
+            let date = this.getStringDate(thisDate, thisDayIndex, dayIndex);
+            let { startTime, endTime, colorTypeId, title } = event;
+            return { startTime, endTime, colorTypeId, title, dayIndex, date };
+          });
+          console.log(newEvents);
+        }
+      );
+    }
+  };
+
   validateInputs = () => {
     this.validateTitle();
     this.validateDays();
     this.validateTime();
-
-    if (this.allValid()) {
-      // send form to backend
-      // ...
-      // close the modal
-      this.props.onClose();
-    }
   };
 
   render() {
@@ -263,6 +324,11 @@ class QuickModal extends Component {
               <Button
                 onClick={() => {
                   this.validateInputs();
+                  if (this.allValid()) {
+                    const data = this.getFormData();
+                    this.handleSubmission(data);
+                    this.props.onClose();
+                  }
                 }}
                 style={{
                   color: "white",
