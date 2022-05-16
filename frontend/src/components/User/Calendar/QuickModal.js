@@ -180,10 +180,29 @@ class QuickModal extends Component {
             let { startTime, endTime, colorTypeId, title } = event;
             return { startTime, endTime, colorTypeId, title, dayIndex, date };
           });
-          console.log(newEvents);
+          this.sendEventToCalendar(newEvents);
         }
       );
     }
+  };
+
+  sendEventToCalendar = (event) => {
+    this.resetValues();
+    this.props.sendEventToCalendar(event);
+  };
+
+  resetValues = () => {
+    this.setState({
+      selectedDays: [],
+      dayOfWeek: "",
+      inEditMode: false,
+      title: "",
+      validation: {
+        title: true,
+        pickedDays: true,
+        endTime: true,
+      },
+    });
   };
 
   validateInputs = () => {

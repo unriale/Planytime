@@ -40,6 +40,13 @@ class MyCalendar extends Component {
 
   componentDidMount() {
     this.checkIfNewVisitor();
+    this.loadSavedEvents();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.events != prevState.events) {
+      this.saveEventsToLocal();
+    }
   }
 
   checkIfNewVisitor = () => {
@@ -50,11 +57,26 @@ class MyCalendar extends Component {
     }
   };
 
+  saveEventsToLocal = () => {
+    const stringified = JSON.stringify(this.state.events);
+    localStorage.setItem("schedule", stringified);
+  };
+
+  loadSavedEvents = () => {
+    let savedData = localStorage.getItem("schedule");
+    if (savedData) {
+      const parsed = JSON.parse(savedData);
+      const events = parsed.map((event) => this.reformatEventData(event));
+      this.setState({ events });
+    }
+  };
+
   closeGuideModal = () => this.setState({ showGuideModal: false });
 
   slotSelectionHandler = (slotInfo) => {
     let newEventStart = slotInfo.start;
     let newEventEnd = slotInfo.end;
+    console.log("slotInfo = ", slotInfo);
 
     this.setState({
       newEventStart,
@@ -70,13 +92,46 @@ class MyCalendar extends Component {
     });
   };
 
+  updateCalendarFromQuickCreate = (newEvents) => {
+    console.log("Updating a calendar...");
+    let newEventsArr = newEvents.map((ev) => this.reformatEventData(ev));
+    this.setState({
+      events: [...this.state.events, ...newEventsArr],
+      createQuickModal: false,
+    });
+  };
+
+  reformatEventData = (event) => {
+    const colorData = this.state.colorIndex[event.colorTypeId];
+    let bgColor = colorData ? colorData.color : "#4286f4";
+    const updatedEvent = {
+      ...event,
+      start: new Date(`${event.date} ${event.startTime}`),
+      end: new Date(`${event.date} ${event.endTime}`),
+      bgColor,
+    };
+    return updatedEvent;
+  };
+
+  setEventCellStyling = (event) => {
+    let color = event.bgColor;
+    let style = {
+      background: color,
+    };
+    return { style };
+  };
+
+  moveEvent = (event, start, end) => {
+    console.log(event, start, end);
+  }
+
   render() {
     return (
       <div>
         <DragAndDropCalendar
           style={{ flex: 1, minHeight: "90vh", margin: "10px" }}
           selectable={true}
-          event={this.state.events}
+          events={this.state.events}
           localizer={localizer}
           defaultView="week"
           views={["week", "day", "agenda"]}
@@ -84,6 +139,7 @@ class MyCalendar extends Component {
           timeslots={4}
           min={moment().hours(5).minutes(0).toDate()}
           onSelectSlot={this.slotSelectionHandler}
+          eventPropGetter={this.setEventCellStyling}
         />
 
         <QuickModal
@@ -93,6 +149,8 @@ class MyCalendar extends Component {
           start={this.state.newEventStart}
           end={this.state.newEventEnd}
           onClose={this.closeModalHandler}
+          sendEventToCalendar={this.updateCalendarFromQuickCreate}
+          onEventDrop={this.moveEvent}
         />
         <Modal
           modalOpen={this.state.showGuideModal}
