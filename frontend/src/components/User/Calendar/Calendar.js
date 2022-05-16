@@ -9,6 +9,10 @@ import googleColors from "./data/googleColors";
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import {
+  formatToDateString,
+  formatToTimeString,
+} from "../../../utils/dateTimeFormatter";
 
 const DragAndDropCalendar = withDragAndDrop(Calendar);
 const localizer = momentLocalizer(moment);
@@ -76,7 +80,6 @@ class MyCalendar extends Component {
   slotSelectionHandler = (slotInfo) => {
     let newEventStart = slotInfo.start;
     let newEventEnd = slotInfo.end;
-    console.log("slotInfo = ", slotInfo);
 
     this.setState({
       newEventStart,
@@ -121,9 +124,28 @@ class MyCalendar extends Component {
     return { style };
   };
 
-  moveEvent = (event, start, end) => {
-    console.log(event, start, end);
-  }
+  getUpdatedEvent = (event) => {
+    let selectedEvent = event.event;
+    selectedEvent.date = formatToDateString(event.start);
+    selectedEvent.startTime = formatToTimeString(event.start);
+    selectedEvent.endTime = formatToTimeString(event.end);
+    selectedEvent.start = new Date(
+      `${selectedEvent.date} ${selectedEvent.startTime}`
+    );
+    selectedEvent.end = new Date(
+      `${selectedEvent.date} ${selectedEvent.endTime}`
+    );
+    return selectedEvent;
+  };
+
+  moveEvent = (event) => {
+    let updatedEvent = this.getUpdatedEvent(event);
+    const { events } = this.state;
+    let remaining = events.filter((event) => event != updatedEvent);
+    this.setState({
+      events: [...remaining, updatedEvent],
+    });
+  };
 
   render() {
     return (
@@ -140,6 +162,7 @@ class MyCalendar extends Component {
           min={moment().hours(5).minutes(0).toDate()}
           onSelectSlot={this.slotSelectionHandler}
           eventPropGetter={this.setEventCellStyling}
+          onEventDrop={this.moveEvent}
         />
 
         <QuickModal
@@ -150,7 +173,6 @@ class MyCalendar extends Component {
           end={this.state.newEventEnd}
           onClose={this.closeModalHandler}
           sendEventToCalendar={this.updateCalendarFromQuickCreate}
-          onEventDrop={this.moveEvent}
         />
         <Modal
           modalOpen={this.state.showGuideModal}
