@@ -138,7 +138,7 @@ class MyCalendar extends Component {
     return selectedEvent;
   };
 
-  moveEvent = (event) => {
+  updateEvent = (event) => {
     let updatedEvent = this.getUpdatedEvent(event);
     const { events } = this.state;
     let remaining = events.filter((event) => event != updatedEvent);
@@ -162,7 +162,8 @@ class MyCalendar extends Component {
           min={moment().hours(5).minutes(0).toDate()}
           onSelectSlot={this.slotSelectionHandler}
           eventPropGetter={this.setEventCellStyling}
-          onEventDrop={this.moveEvent}
+          onEventDrop={this.updateEvent}
+          onEventResize={this.updateEvent}
         />
 
         <QuickModal
