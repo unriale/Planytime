@@ -46,6 +46,35 @@ class QuickModal extends Component {
     },
   };
 
+  componentDidUpdate(prevProps) {
+    if (
+      this.props.start !== prevProps.start ||
+      this.props.end !== prevProps.end
+    ) {
+      this.setNewEventTime();
+    }
+    if (this.props.selectedEvent != prevProps.selectedEvent) {
+      this.checkSelectedEvent();
+    }
+  }
+
+  checkSelectedEvent = () => {
+    const { colorTypeId, dayIndex, end, start, title } =
+      this.props.selectedEvent;
+    if (colorTypeId) {
+      this.updateModalBgColor(colorTypeId);
+    }
+    this.setState({
+      inEditMode: true,
+      title,
+      colorTypeId,
+      startTime: start,
+      endTime: end,
+      dayIndex,
+      dayOfWeek: dayIndex,
+    });
+  };
+
   setSelectedColor = (colorTypeId) => {
     this.setState({ colorTypeId });
     this.updateModalBgColor(colorTypeId);
@@ -63,15 +92,43 @@ class QuickModal extends Component {
     console.log("selectedDays = ", selectedDays);
   };
 
-  renderDayPicker = () => {
+  populateDaysBox = (dayOfWeek) => {
     return (
-      <MultiDayPicker
-        listOfDays={daysOfWeek}
-        dayOfWeek={this.state.dayOfWeek}
-        setSelectedDays={this.setSelectedDays}
-        valid={this.state.validation.pickedDays}
-      />
+      <option key={dayOfWeek.id} value={dayOfWeek.id}>
+        {dayOfWeek.name}
+      </option>
     );
+  };
+
+  handleDayChange = (e) => {
+    this.setState({[e.target.name]:[e.target.value]});
+  };
+
+  renderDayPicker = () => {
+    if (!this.state.inEditMode) {
+      return (
+        <MultiDayPicker
+          listOfDays={daysOfWeek}
+          dayOfWeek={this.state.dayOfWeek}
+          setSelectedDays={this.setSelectedDays}
+          valid={this.state.validation.pickedDays}
+        />
+      );
+    } else {
+      return (
+        <div className="form-group" style={{ paddingBottom: "0.1em" }}>
+          <label>Day of Week</label>
+          <select
+            className="custom-select form-control mx-auto"
+            name="dayOfWeek"
+            value={this.state.dayOfWeek}
+            onChange={this.handleDayChange}
+          >
+            {daysOfWeek.map((day) => this.populateDaysBox(day))}
+          </select>
+        </div>
+      );
+    }
   };
 
   setNewEventTime = () => {
@@ -81,15 +138,6 @@ class QuickModal extends Component {
       dayOfWeek: moment(this.props.start).format("e"), // day index
     });
   };
-
-  componentDidUpdate(prevProps) {
-    if (
-      this.props.start !== prevProps.start ||
-      this.props.end !== prevProps.end
-    ) {
-      this.setNewEventTime();
-    }
-  }
 
   validateTitle = () => {
     const { validation, title } = this.state;

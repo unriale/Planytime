@@ -120,6 +120,7 @@ class MyCalendar extends Component {
     let color = event.bgColor;
     let style = {
       background: color,
+      borderColor: "#c2bcbb",
     };
     return { style };
   };
@@ -135,6 +136,7 @@ class MyCalendar extends Component {
     selectedEvent.end = new Date(
       `${selectedEvent.date} ${selectedEvent.endTime}`
     );
+    selectedEvent.dayIndex = moment(selectedEvent.start).format("e"); // day index
     return selectedEvent;
   };
 
@@ -145,6 +147,10 @@ class MyCalendar extends Component {
     this.setState({
       events: [...remaining, updatedEvent],
     });
+  };
+
+  selectEvent = (event) => {
+    this.setState({ selectedEvent: event, createQuickModal: true });
   };
 
   render() {
@@ -164,6 +170,7 @@ class MyCalendar extends Component {
           eventPropGetter={this.setEventCellStyling}
           onEventDrop={this.updateEvent}
           onEventResize={this.updateEvent}
+          onSelectEvent={this.selectEvent}
         />
 
         <QuickModal
@@ -172,6 +179,7 @@ class MyCalendar extends Component {
           colorIndex={this.state.colorIndex}
           start={this.state.newEventStart}
           end={this.state.newEventEnd}
+          selectedEvent={this.state.selectedEvent}
           onClose={this.closeModalHandler}
           sendEventToCalendar={this.updateCalendarFromQuickCreate}
         />
