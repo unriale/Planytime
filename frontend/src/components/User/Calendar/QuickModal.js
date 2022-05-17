@@ -101,7 +101,7 @@ class QuickModal extends Component {
   };
 
   handleDayChange = (e) => {
-    this.setState({[e.target.name]:[e.target.value]});
+    this.setState({ [e.target.name]: [e.target.value] });
   };
 
   renderDayPicker = () => {
@@ -169,6 +169,9 @@ class QuickModal extends Component {
 
   allValid = () => {
     const { validation } = this.state;
+    if (this.state.inEditMode) {
+      return validation.title && validation.endTime;
+    }
     return validation.title && validation.pickedDays && validation.endTime;
   };
 
@@ -216,7 +219,16 @@ class QuickModal extends Component {
 
   handleSubmission = (event) => {
     if (this.state.inEditMode) {
-      alert("Edit mode");
+      let date = this.getStringDate(
+        new Date(this.props.selectedEvent.date),
+        this.props.selectedEvent.dayIndex,
+        event.dayOfWeek
+      );
+      event.date = date;
+      event.dayIndex = event.dayOfWeek;
+      console.log(this.props.selectedEvent);
+      console.log(event);
+      this.sendUpdatedEvent(this.props.selectedEvent, event);
     } else {
       this.setState(
         { eventDate: formatToDateString(this.state.startTime) },
@@ -232,6 +244,11 @@ class QuickModal extends Component {
         }
       );
     }
+  };
+
+  sendUpdatedEvent = (originalEvent, updatedEvent) => {
+    this.resetValues();
+    this.props.showUpdatedEvent(originalEvent, updatedEvent);
   };
 
   sendEventToCalendar = (event) => {

@@ -96,7 +96,6 @@ class MyCalendar extends Component {
   };
 
   updateCalendarFromQuickCreate = (newEvents) => {
-    console.log("Updating a calendar...");
     let newEventsArr = newEvents.map((ev) => this.reformatEventData(ev));
     this.setState({
       events: [...this.state.events, ...newEventsArr],
@@ -153,6 +152,17 @@ class MyCalendar extends Component {
     this.setState({ selectedEvent: event, createQuickModal: true });
   };
 
+  renderUpdatedEvent = (original, updated) => {
+    const { events } = this.state;
+    let updatedEvent = this.reformatEventData(updated);
+    let remaining = events.filter((event) => event != original);
+    this.setState({
+      events: [...remaining, updatedEvent],
+      selectedEvent: {},
+      createQuickModal: false,
+    });
+  };
+
   render() {
     return (
       <div>
@@ -182,6 +192,7 @@ class MyCalendar extends Component {
           selectedEvent={this.state.selectedEvent}
           onClose={this.closeModalHandler}
           sendEventToCalendar={this.updateCalendarFromQuickCreate}
+          showUpdatedEvent={this.renderUpdatedEvent}
         />
         <Modal
           modalOpen={this.state.showGuideModal}
