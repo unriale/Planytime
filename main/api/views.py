@@ -61,8 +61,19 @@ def getEvents(request):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
+def deleteEvent(request):
+    event = request.data["event"]
+    try:
+        event_to_delete = Event.objects.get(id=event["id"])
+        event_to_delete.delete()
+        return Response(event, status=200)
+    except:
+        return Response(event, status=400)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def updateEvent(request):
-    user = request.user
     event = request.data["event"]
     updated_event = Event.objects.filter(id=event["id"]).update(
         title=event["title"],
@@ -73,7 +84,6 @@ def updateEvent(request):
         dayIndex=event["dayIndex"]
     )
     if updated_event:
-        print("OIDUFHJIDHFNOIDFJOIDHFLIDUHF")
         return Response(event, status=200)
     return Response(event, status=400)
 

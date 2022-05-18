@@ -232,13 +232,25 @@ class MyCalendar extends Component {
     }
   };
 
-  removeEventHandler = (event) => {
+  removeEventHandler = async (event) => {
     console.log("Deleting...", event);
-    const { events } = this.state;
-    const remaining = events.filter((ev) => ev != event);
-    this.setState({
-      events: remaining,
+    let response = await fetch("http://localhost:8000/api/eventdelete/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + String(this.context.authTokens.access),
+      },
+      body: JSON.stringify({
+        event: event,
+      }),
     });
+    if (response.status === 200) {
+      const { events } = this.state;
+      const remaining = events.filter((ev) => ev != event);
+      this.setState({
+        events: remaining,
+      });
+    }
   };
 
   render() {
