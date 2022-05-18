@@ -10,6 +10,7 @@ from .serializers import NoteSerializer, EventSerializer
 from main.models import Note
 
 from django.utils import timezone
+from main.models import Event
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -48,10 +49,40 @@ def getNotes(request):
     serializer = NoteSerializer(notes, many=True)
     return Response(serializer.data)
 
-@api_view(['GET', 'POST'])
+
+@api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def getEvents(request):
     user = request.user
     events = user.event_set.all()
     serializer = EventSerializer(events, many=True)
     return Response(serializer.data)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def saveEvents(request):
+    user = request.user
+    events = request.data['events']
+    if events:
+        for event in events:
+            title = event['title']
+            date = event['date']
+            startTime = event['startTime']
+            endTime = event['endTime']
+            colorTypeId = event['colorTypeId']
+            dayIndex = event['dayIndex']
+            event = Event.objects.create(
+                user=user,
+                title=title, 
+                date=date, 
+                startTime=startTime, 
+                endTime=endTime, 
+                colorTypeId=colorTypeId, 
+                dayIndex=dayIndex)
+        serializer = EventSerializer(events, many=True)
+        return Response(serializer.data, status=200)
+    return Response({'error': ''}, status=400)
+    #events = user.event_set.all()
+      
+    

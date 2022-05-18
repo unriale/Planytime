@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useContext } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
@@ -13,6 +13,7 @@ import {
   formatToDateString,
   formatToTimeString,
 } from "../../../utils/dateTimeFormatter";
+import AuthContext from "../../../context/AuthContext";
 
 const DragAndDropCalendar = withDragAndDrop(Calendar);
 const localizer = momentLocalizer(moment);
@@ -32,6 +33,8 @@ const colorIndex = (colorTypes) => {
 };
 
 class MyCalendar extends Component {
+  static contextType = AuthContext;
+
   state = {
     events: [],
     selectedEvent: {},
@@ -61,9 +64,27 @@ class MyCalendar extends Component {
     }
   };
 
-  saveEventsToLocal = () => {
-    const stringified = JSON.stringify(this.state.events);
-    localStorage.setItem("schedule", stringified);
+  saveEventsToLocal = async (event) => {
+    let response = await fetch("http://localhost:8000/api/eventsave/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + String(this.context.authTokens.access),
+      },
+      body: JSON.stringify({
+        events: this.state.events,
+      }),
+    });
+    
+    if(response.status === 200) {
+      let data = await response.json();
+      console.log(data);
+    }
+    else {
+      console.error("error on post request");
+    }
+    // const stringified = JSON.stringify(this.state.events);
+    // localStorage.setItem("schedule", stringified);
   };
 
   loadSavedEvents = () => {
@@ -166,10 +187,10 @@ class MyCalendar extends Component {
   removeEventHandler = (event) => {
     console.log("Deleting...", event);
     const { events } = this.state;
-    const remaining = events.filter(ev => ev != event);
-    this.setState( {
-      events: remaining
-    })
+    const remaining = events.filter((ev) => ev != event);
+    this.setState({
+      events: remaining,
+    });
   };
 
   render() {
