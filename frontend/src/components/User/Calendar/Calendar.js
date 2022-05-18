@@ -37,6 +37,7 @@ class MyCalendar extends Component {
 
   state = {
     events: [],
+    eventsToAdd: [],
     selectedEvent: {},
     showGuideModal: false,
     newEventStart: null,
@@ -45,13 +46,20 @@ class MyCalendar extends Component {
     colorIndex: colorIndex(googleColors),
   };
 
-  componentDidMount() {
+  async componentDidMount() {
     this.checkIfNewVisitor();
     this.loadSavedEvents();
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (this.state.events != prevState.events) {
+  async componentDidUpdate(prevProps, prevState) {
+    if (this.state.events !== prevState.events) {
+      console.log("this.state.events != prevState.events");
+      console.log(
+        "this.state.events = ",
+        this.state.events,
+        "prevState.events = ",
+        prevState.events
+      );
       this.saveEventsToLocal();
     }
   }
@@ -64,36 +72,54 @@ class MyCalendar extends Component {
     }
   };
 
-  saveEventsToLocal = async (event) => {
-    let response = await fetch("http://localhost:8000/api/eventsave/", {
+  saveEventsToLocal = async () => {
+    if(this.state.eventsToAdd){
+      let response = await fetch("http://localhost:8000/api/eventsave/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer " + String(this.context.authTokens.access),
       },
       body: JSON.stringify({
-        events: this.state.events,
+        events: this.state.eventsToAdd,
       }),
     });
-    
-    if(response.status === 200) {
+
+    if (response.status === 200) {
       let data = await response.json();
-      console.log(data);
-    }
-    else {
+      console.log("SAVED!, response data is ", data);
+      this.setState({ eventsToAdd: [] });
+    } else {
       console.error("error on post request");
     }
+  }
     // const stringified = JSON.stringify(this.state.events);
+    // console.log("Events to be saved are ", stringified);
     // localStorage.setItem("schedule", stringified);
   };
 
-  loadSavedEvents = () => {
-    let savedData = localStorage.getItem("schedule");
-    if (savedData) {
-      const parsed = JSON.parse(savedData);
-      const events = parsed.map((event) => this.reformatEventData(event));
+  loadSavedEvents = async () => {
+    console.log("Loading events from a DB...");
+    let response = await fetch("http://localhost:8000/api/events/", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + String(this.context.authTokens.access),
+      },
+    });
+    let data = await response.json();
+    if (data) {
+      const events = data.map((event) => this.reformatEventData(event));
+      console.log("Events loaded and reformated are = ", events);
       this.setState({ events });
     }
+    // let savedData = localStorage.getItem("schedule");
+    // if (savedData) {
+    //   const parsed = JSON.parse(savedData);
+    //   const events = parsed.map((event) => this.reformatEventData(event));
+    //   console.log("Events loaded and reformated are = ", events);
+    //   this.setState({ events });
+    // }
   };
 
   closeGuideModal = () => this.setState({ showGuideModal: false });
@@ -117,6 +143,7 @@ class MyCalendar extends Component {
   };
 
   updateCalendarFromQuickCreate = (newEvents) => {
+    this.setState({ eventsToAdd: newEvents });
     let newEventsArr = newEvents.map((ev) => this.reformatEventData(ev));
     this.setState({
       events: [...this.state.events, ...newEventsArr],
