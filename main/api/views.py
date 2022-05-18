@@ -61,6 +61,25 @@ def getEvents(request):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
+def updateEvent(request):
+    user = request.user
+    event = request.data["event"]
+    updated_event = Event.objects.filter(id=event["id"]).update(
+        title=event["title"],
+        date=event["date"],
+        startTime=event["startTime"],
+        endTime=event["endTime"],
+        colorTypeId=event["colorTypeId"],
+        dayIndex=event["dayIndex"]
+    )
+    if updated_event:
+        print("OIDUFHJIDHFNOIDFJOIDHFLIDUHF")
+        return Response(event, status=200)
+    return Response(event, status=400)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def saveEvents(request):
     user = request.user
     events = request.data['events']
@@ -74,15 +93,13 @@ def saveEvents(request):
             dayIndex = event['dayIndex']
             event = Event.objects.create(
                 user=user,
-                title=title, 
-                date=date, 
-                startTime=startTime, 
-                endTime=endTime, 
-                colorTypeId=colorTypeId, 
+                title=title,
+                date=date,
+                startTime=startTime,
+                endTime=endTime,
+                colorTypeId=colorTypeId,
                 dayIndex=dayIndex)
         serializer = EventSerializer(events, many=True)
         return Response(serializer.data, status=200)
     return Response({'error': ''}, status=400)
     #events = user.event_set.all()
-      
-    

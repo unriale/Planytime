@@ -73,26 +73,26 @@ class MyCalendar extends Component {
   };
 
   saveEventsToLocal = async () => {
-    if(this.state.eventsToAdd){
+    if (this.state.eventsToAdd.length !== 0) {
       let response = await fetch("http://localhost:8000/api/eventsave/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + String(this.context.authTokens.access),
-      },
-      body: JSON.stringify({
-        events: this.state.eventsToAdd,
-      }),
-    });
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + String(this.context.authTokens.access),
+        },
+        body: JSON.stringify({
+          events: this.state.eventsToAdd,
+        }),
+      });
 
-    if (response.status === 200) {
-      let data = await response.json();
-      console.log("SAVED!, response data is ", data);
-      this.setState({ eventsToAdd: [] });
-    } else {
-      console.error("error on post request");
+      if (response.status === 200) {
+        let data = await response.json();
+        console.log("SAVED!, response data is ", data);
+        this.setState({ eventsToAdd: [] });
+      } else {
+        console.error("error on post request");
+      }
     }
-  }
     // const stringified = JSON.stringify(this.state.events);
     // console.log("Events to be saved are ", stringified);
     // localStorage.setItem("schedule", stringified);
@@ -187,28 +187,49 @@ class MyCalendar extends Component {
     return selectedEvent;
   };
 
-  updateEvent = (event) => {
-    let updatedEvent = this.getUpdatedEvent(event);
-    const { events } = this.state;
-    let remaining = events.filter((event) => event != updatedEvent);
-    this.setState({
-      events: [...remaining, updatedEvent],
+  sendUpdatedEvent = async (eventData) => {
+    let response = await fetch("http://localhost:8000/api/eventupdate/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + String(this.context.authTokens.access),
+      },
+      body: JSON.stringify({
+        event: eventData,
+      }),
     });
+    return response;
+  };
+
+  updateEvent = async (event) => {
+    let updatedEvent = this.getUpdatedEvent(event);
+    let response = await this.sendUpdatedEvent(updatedEvent);
+
+    if (response.status === 200) {
+      const { events } = this.state;
+      let remaining = events.filter((event) => event != updatedEvent);
+      this.setState({
+        events: [...remaining, updatedEvent],
+      });
+    }
   };
 
   selectEvent = (event) => {
     this.setState({ selectedEvent: event, createQuickModal: true });
   };
 
-  renderUpdatedEvent = (original, updated) => {
-    const { events } = this.state;
+  renderUpdatedEvent = async (original, updated) => {
     let updatedEvent = this.reformatEventData(updated);
-    let remaining = events.filter((event) => event != original);
-    this.setState({
-      events: [...remaining, updatedEvent],
-      selectedEvent: {},
-      createQuickModal: false,
-    });
+    let response = await this.sendUpdatedEvent(updatedEvent);
+    if (response.status === 200) {
+      const { events } = this.state;
+      let remaining = events.filter((event) => event != original);
+      this.setState({
+        events: [...remaining, updatedEvent],
+        selectedEvent: {},
+        createQuickModal: false,
+      });
+    }
   };
 
   removeEventHandler = (event) => {

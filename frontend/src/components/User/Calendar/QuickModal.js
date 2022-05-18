@@ -226,8 +226,7 @@ class QuickModal extends Component {
       );
       event.date = date;
       event.dayIndex = event.dayOfWeek;
-      console.log(this.props.selectedEvent);
-      console.log(event);
+      event.id = this.props.selectedEvent.id;
       this.sendUpdatedEvent(this.props.selectedEvent, event);
     } else {
       this.setState(
@@ -279,7 +278,7 @@ class QuickModal extends Component {
   closeHandler = () => {
     this.props.onClose();
     this.resetValues();
-  }
+  };
 
   insertDeleteButton = () => {
     if (this.state.inEditMode) {

@@ -11,6 +11,7 @@ urlpatterns = [
     path('notes/', views.getNotes),
     path('events/', views.getEvents),
     path('eventsave/', views.saveEvents),
+    path('eventupdate/', views.updateEvent),
     path('token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
