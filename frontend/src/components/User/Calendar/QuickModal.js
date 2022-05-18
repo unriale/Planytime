@@ -276,6 +276,30 @@ class QuickModal extends Component {
     this.validateTime();
   };
 
+  closeHandler = () => {
+    this.props.onClose();
+    this.resetValues();
+  }
+
+  insertDeleteButton = () => {
+    if (this.state.inEditMode) {
+      return (
+        <Button
+          color="danger"
+          style={{
+            marginRight: "1rem",
+          }}
+          onClick={() => {
+            this.props.delete(this.props.selectedEvent);
+            this.closeHandler();
+          }}
+        >
+          Delete
+        </Button>
+      );
+    }
+  };
+
   render() {
     const { modalOpen } = this.props;
     return (
@@ -405,6 +429,7 @@ class QuickModal extends Component {
             </FormGroup>
 
             <FormGroup style={{ textAlign: "center" }}>
+              {this.insertDeleteButton()}
               <Button
                 onClick={() => {
                   this.validateInputs();

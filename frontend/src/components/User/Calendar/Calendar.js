@@ -163,6 +163,15 @@ class MyCalendar extends Component {
     });
   };
 
+  removeEventHandler = (event) => {
+    console.log("Deleting...", event);
+    const { events } = this.state;
+    const remaining = events.filter(ev => ev != event);
+    this.setState( {
+      events: remaining
+    })
+  };
+
   render() {
     return (
       <div>
@@ -193,6 +202,7 @@ class MyCalendar extends Component {
           onClose={this.closeModalHandler}
           sendEventToCalendar={this.updateCalendarFromQuickCreate}
           showUpdatedEvent={this.renderUpdatedEvent}
+          delete={this.removeEventHandler}
         />
         <Modal
           modalOpen={this.state.showGuideModal}
