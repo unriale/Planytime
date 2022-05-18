@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .serializers import NoteSerializer
+from .serializers import NoteSerializer, EventSerializer
 from main.models import Note
 
 from django.utils import timezone
@@ -46,4 +46,12 @@ def getNotes(request):
     user = request.user
     notes = user.note_set.all()
     serializer = NoteSerializer(notes, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
+def getEvents(request):
+    user = request.user
+    events = user.event_set.all()
+    serializer = EventSerializer(events, many=True)
     return Response(serializer.data)
