@@ -93,6 +93,7 @@ def updateEvent(request):
 def saveEvents(request):
     user = request.user
     events = request.data['events']
+    eventsArr = []
     if events:
         for event in events:
             title = event['title']
@@ -109,7 +110,8 @@ def saveEvents(request):
                 endTime=endTime,
                 colorTypeId=colorTypeId,
                 dayIndex=dayIndex)
-        serializer = EventSerializer(events, many=True)
+            eventsArr.append(event)
+        serializer = EventSerializer(eventsArr, many=True)
         return Response(serializer.data, status=200)
     return Response({'error': ''}, status=400)
     #events = user.event_set.all()

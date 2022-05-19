@@ -53,13 +53,6 @@ class MyCalendar extends Component {
 
   async componentDidUpdate(prevProps, prevState) {
     if (this.state.events !== prevState.events) {
-      console.log("this.state.events != prevState.events");
-      console.log(
-        "this.state.events = ",
-        this.state.events,
-        "prevState.events = ",
-        prevState.events
-      );
       this.saveEventsToLocal();
     }
   }
@@ -88,14 +81,12 @@ class MyCalendar extends Component {
       if (response.status === 200) {
         let data = await response.json();
         console.log("SAVED!, response data is ", data);
+        this.loadSavedEvents();
         this.setState({ eventsToAdd: [] });
       } else {
         console.error("error on post request");
       }
     }
-    // const stringified = JSON.stringify(this.state.events);
-    // console.log("Events to be saved are ", stringified);
-    // localStorage.setItem("schedule", stringified);
   };
 
   loadSavedEvents = async () => {
@@ -113,13 +104,6 @@ class MyCalendar extends Component {
       console.log("Events loaded and reformated are = ", events);
       this.setState({ events });
     }
-    // let savedData = localStorage.getItem("schedule");
-    // if (savedData) {
-    //   const parsed = JSON.parse(savedData);
-    //   const events = parsed.map((event) => this.reformatEventData(event));
-    //   console.log("Events loaded and reformated are = ", events);
-    //   this.setState({ events });
-    // }
   };
 
   closeGuideModal = () => this.setState({ showGuideModal: false });
@@ -152,6 +136,8 @@ class MyCalendar extends Component {
   };
 
   reformatEventData = (event) => {
+    console.log("Reformat event data, event is ", event);
+
     const colorData = this.state.colorIndex[event.colorTypeId];
     let bgColor = colorData ? colorData.color : "#4286f4";
     const updatedEvent = {
@@ -233,7 +219,6 @@ class MyCalendar extends Component {
   };
 
   removeEventHandler = async (event) => {
-    console.log("Deleting...", event);
     let response = await fetch("http://localhost:8000/api/eventdelete/", {
       method: "POST",
       headers: {

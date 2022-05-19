@@ -63,16 +63,16 @@ class QuickModal extends Component {
       this.props.selectedEvent;
     if (colorTypeId) {
       this.updateModalBgColor(colorTypeId);
+      this.setState({
+        colorTypeId,
+        inEditMode: true,
+        title,
+        startTime: start,
+        endTime: end,
+        dayIndex,
+        dayOfWeek: dayIndex,
+      });
     }
-    this.setState({
-      inEditMode: true,
-      title,
-      colorTypeId,
-      startTime: start,
-      endTime: end,
-      dayIndex,
-      dayOfWeek: dayIndex,
-    });
   };
 
   setSelectedColor = (colorTypeId) => {
@@ -179,6 +179,10 @@ class QuickModal extends Component {
     let startTime = formatToTimeString(this.state.startTime);
     let endTime = formatToTimeString(this.state.endTime);
     let dayOfWeek = parseInt(this.state.dayOfWeek);
+    console.log(
+      "GETTING FORM DATA, this.state.colorTypeId=",
+      this.state.colorTypeId
+    );
     let colorTypeId = parseInt(this.state.colorTypeId);
     let title = this.state.title;
 
