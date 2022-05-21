@@ -6,11 +6,13 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .serializers import NoteSerializer, EventSerializer
+from .serializers import NoteSerializer, EventSerializer, MonthEventSerializer
 from main.models import Note
 
 from django.utils import timezone
 from main.models import Event
+
+from django.db import connection
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -43,16 +45,7 @@ def getRoutes(request):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def getNotes(request):
-    user = request.user
-    notes = user.note_set.all()
-    serializer = NoteSerializer(notes, many=True)
-    return Response(serializer.data)
-
-
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def getEvents(request):
+def get_events(request):
     user = request.user
     events = user.event_set.all()
     serializer = EventSerializer(events, many=True)
@@ -61,7 +54,7 @@ def getEvents(request):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def deleteEvent(request):
+def delete_event(request):
     event = request.data["event"]
     try:
         event_to_delete = Event.objects.get(id=event["id"])
@@ -73,7 +66,7 @@ def deleteEvent(request):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def updateEvent(request):
+def update_event(request):
     event = request.data["event"]
     updated_event = Event.objects.filter(id=event["id"]).update(
         title=event["title"],
@@ -90,7 +83,7 @@ def updateEvent(request):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def saveEvents(request):
+def save_events(request):
     user = request.user
     events = request.data['events']
     eventsArr = []
@@ -114,4 +107,16 @@ def saveEvents(request):
         serializer = EventSerializer(eventsArr, many=True)
         return Response(serializer.data, status=200)
     return Response({'error': ''}, status=400)
-    #events = user.event_set.all()
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_month_events(request):
+    user = request.user
+
+    with connection.cursor() as cursor:
+        cursor.execute(f"SELECT EXTRACT(MONTH from DATE_TRUNC('month',date)) AS date_to_month, \
+                                  COUNT(id) AS count FROM main_event WHERE user_id={user.id} GROUP BY DATE_TRUNC('month',date)")
+        data = cursor.fetchall()
+        data.sort(key=lambda tup: tup[0])
+        return Response(data, status=200)

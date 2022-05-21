@@ -8,11 +8,11 @@ from rest_framework_simplejwt.views import (
 
 urlpatterns = [
     path('', views.getRoutes),
-    path('notes/', views.getNotes),
-    path('events/', views.getEvents),
-    path('eventsave/', views.saveEvents),
-    path('eventupdate/', views.updateEvent),
-    path('eventdelete/', views.deleteEvent),
+    path('events/', views.get_events),
+    path('eventsave/', views.save_events),
+    path('eventupdate/', views.update_event),
+    path('eventdelete/', views.delete_event),
+    path('getmonthevents/', views.get_month_events),
     path('token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]

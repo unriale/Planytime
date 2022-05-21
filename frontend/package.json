@@ -18,6 +18,7 @@
     "react-scroll": "^1.8.7",
     "react-spring": "^9.0.0-rc.3",
     "reactstrap": "^9.0.2",
+    "recharts": "^2.1.10",
     "styled-components": "^5.3.5",
     "web-vitals": "^2.1.4"
   },
