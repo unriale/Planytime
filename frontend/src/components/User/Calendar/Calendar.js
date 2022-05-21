@@ -136,8 +136,6 @@ class MyCalendar extends Component {
   };
 
   reformatEventData = (event) => {
-    console.log("Reformat event data, event is ", event);
-
     const colorData = this.state.colorIndex[event.colorTypeId];
     let bgColor = colorData ? colorData.color : "#4286f4";
     const updatedEvent = {
