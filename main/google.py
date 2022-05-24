@@ -51,13 +51,13 @@ def get_all_events(request):
 
 @api_view(['GET'])
 def get_google_calendar_events(request):
-    get_all_events(request)
+    return get_all_events(request)
 
 
 @api_view(['GET'])
 def change_calendar(request):
     get_crendetials_google()
-    get_all_events(request)
+    return get_all_events(request)
 
 
 def reformat_events(request, events):

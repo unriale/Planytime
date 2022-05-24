@@ -50,11 +50,12 @@ class MyCalendar extends Component {
   };
 
   async componentDidMount() {
+    console.log("componentDidMount");
     this.checkIfNewVisitor();
     this.loadSavedEvents();
   }
 
-  async componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     if (this.state.events !== prevState.events) {
       this.saveEventsToLocal();
     }
@@ -280,7 +281,10 @@ class MyCalendar extends Component {
   render() {
     return (
       <div>
-        <GoogleCalendar sendEvents={this.saveGoogleEvents} />
+        <GoogleCalendar
+          sendEvents={this.saveGoogleEvents}
+          events={this.state.events}
+        />
         <DragAndDropCalendar
           style={{ flex: 1, minHeight: "90vh", margin: "10px" }}
           selectable={true}

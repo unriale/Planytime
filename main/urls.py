@@ -14,5 +14,6 @@ router.register(r'user', UserViewSet)
 urlpatterns = [
     path('signup/', views.signup, name="signup"),
     path('router/', include(router.urls)),
-    path('gcevents/', google.get_google_calendar_events)
+    path('gcevents/', google.get_google_calendar_events), 
+    path('gcalendar/', google.change_calendar),
 ]
