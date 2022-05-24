@@ -11,6 +11,7 @@ from main.models import Note
 
 from django.utils import timezone
 from main.models import Event
+from dateutil.parser import parse
 
 from django.db import connection
 

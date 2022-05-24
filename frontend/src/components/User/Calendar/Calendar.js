@@ -14,6 +14,7 @@ import {
   formatToTimeString,
 } from "../../../utils/dateTimeFormatter";
 import AuthContext from "../../../context/AuthContext";
+import GoogleCalendar from "./GoogleCalendar";
 
 const DragAndDropCalendar = withDragAndDrop(Calendar);
 const localizer = momentLocalizer(moment);
@@ -37,7 +38,9 @@ class MyCalendar extends Component {
 
   state = {
     events: [],
+    dbEvents: [],
     eventsToAdd: [],
+    googleEventsToAdd: [],
     selectedEvent: {},
     showGuideModal: false,
     newEventStart: null,
@@ -87,6 +90,23 @@ class MyCalendar extends Component {
         console.error("error on post request");
       }
     }
+    if (this.state.googleEventsToAdd.length !== 0) {
+      this.setState({ googleEventsToAdd: [] }, () => {
+        let googleEvents = this.state.events.filter((ev) => !ev.id);
+        let reducedGoogleEvents = googleEvents.map((ev) =>
+          this.reduceGoogleEventsData(ev)
+        );
+        localStorage.setItem(
+          "googleEvents",
+          JSON.stringify(reducedGoogleEvents)
+        );
+      });
+    }
+  };
+
+  reduceGoogleEventsData = (event) => {
+    let { start, end, bgColor, ...reduced } = event;
+    return reduced;
   };
 
   loadSavedEvents = async () => {
@@ -100,9 +120,24 @@ class MyCalendar extends Component {
     });
     let data = await response.json();
     if (data) {
+      console.log("Events before reformatting are ", data);
       const events = data.map((event) => this.reformatEventData(event));
       console.log("Events loaded and reformated are = ", events);
-      this.setState({ events });
+      this.setState({ dbEvents: events });
+      this.setState({ events }, () => this.loadGoogleEvents());
+    }
+  };
+
+  loadGoogleEvents = () => {
+    let googleEvents = localStorage.getItem("googleEvents");
+    if (googleEvents) {
+      let parsedGoogleEvents = JSON.parse(googleEvents);
+      let reformatedEvents = parsedGoogleEvents.map((ev) =>
+        this.reformatEventData(ev)
+      );
+      this.setState({
+        events: [...this.state.events, ...reformatedEvents],
+      });
     }
   };
 
@@ -236,9 +271,16 @@ class MyCalendar extends Component {
     }
   };
 
+  saveGoogleEvents = (events) => {
+    const googleEvents = events.map((event) => this.reformatEventData(event));
+    this.setState({ googleEventsToAdd: googleEvents });
+    this.setState({ events: [...this.state.dbEvents, ...googleEvents] });
+  };
+
   render() {
     return (
       <div>
+        <GoogleCalendar sendEvents={this.saveGoogleEvents} />
         <DragAndDropCalendar
           style={{ flex: 1, minHeight: "90vh", margin: "10px" }}
           selectable={true}
@@ -254,6 +296,7 @@ class MyCalendar extends Component {
           onEventDrop={this.updateEvent}
           onEventResize={this.updateEvent}
           onSelectEvent={this.selectEvent}
+          draggableAccessor={false}
         />
 
         <QuickModal

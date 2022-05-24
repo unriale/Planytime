@@ -42,6 +42,10 @@ export default [
     {
       color: "#dc2127",
       id: 11
+    },
+    {
+      color: "#44609b",
+      id: 12
     }
   ];
   
