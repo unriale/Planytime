@@ -1,4 +1,4 @@
-import React, { Component, useContext } from "react";
+import React, { Component, useContext, useCallback } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
@@ -178,6 +178,7 @@ class MyCalendar extends Component {
       ...event,
       start: new Date(`${event.date} ${event.startTime}`),
       end: new Date(`${event.date} ${event.endTime}`),
+      isDraggable: event.id ? true : false,
       bgColor,
     };
     return updatedEvent;
@@ -189,6 +190,11 @@ class MyCalendar extends Component {
       background: color,
       borderColor: "#c2bcbb",
     };
+    if (event.isDraggable) {
+      style = { ...style, className: "isDraggable" };
+    } else {
+      style = { ...style, className: "nonDraggable" };
+    }
     return { style };
   };
 
@@ -300,7 +306,7 @@ class MyCalendar extends Component {
           onEventDrop={this.updateEvent}
           onEventResize={this.updateEvent}
           onSelectEvent={this.selectEvent}
-          draggableAccessor={false}
+          draggableAccessor="isDraggable"
         />
 
         <QuickModal
