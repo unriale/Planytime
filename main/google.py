@@ -16,7 +16,7 @@ SCOPES = ['https://www.googleapis.com/auth/calendar.events']
 def get_crendetials_google():
     flow = InstalledAppFlow.from_client_secrets_file(
         "credentials.json", SCOPES)
-    creds = flow.run_local_server(port=8080)
+    creds = flow.run_local_server(port=7000)
     pickle.dump(creds, open("token.txt", "wb"))
     return creds
 
