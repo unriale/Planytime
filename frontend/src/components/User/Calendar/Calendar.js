@@ -279,7 +279,8 @@ class MyCalendar extends Component {
   };
 
   saveGoogleEvents = (events) => {
-    const googleEvents = events.map((event) => this.reformatEventData(event));
+    let googleEvents = events.map((event) => this.reformatEventData(event));
+    googleEvents = googleEvents.map(event => ({...event, isGoogleEvent: true}))
     this.setState({ googleEventsToAdd: googleEvents });
     this.setState({ events: [...this.state.dbEvents, ...googleEvents] });
   };

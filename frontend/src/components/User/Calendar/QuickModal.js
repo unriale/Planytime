@@ -29,9 +29,11 @@ class QuickModal extends Component {
     selectedDays: [],
     dayOfWeek: "",
     inEditMode: false,
+    isGoogleEvent: false,
     colorTypeId: "9",
     addEventTitle: "Add to Your Schedule",
     editEventTitle: "Edit Your Saved Event",
+    googleEventTitle: "Google Calendar Event",
     headerTextColor: "white",
     defaultBgColor: "#5484ed",
     modalHeaderColor: "",
@@ -58,7 +60,14 @@ class QuickModal extends Component {
     }
   }
 
+  checkIfGoogleEvent = () => {
+    if (this.props.selectedEvent.isGoogleEvent) {
+      this.setState({ isGoogleEvent: true });
+    } else this.setState({ isGoogleEvent: false });
+  };
+
   checkSelectedEvent = () => {
+    this.checkIfGoogleEvent();
     const { colorTypeId, dayIndex, end, start, title } =
       this.props.selectedEvent;
     if (colorTypeId) {
@@ -89,7 +98,6 @@ class QuickModal extends Component {
     this.setState({ selectedDays }, () => {
       this.validateDays();
     });
-    console.log("selectedDays = ", selectedDays);
   };
 
   populateDaysBox = (dayOfWeek) => {
@@ -123,6 +131,7 @@ class QuickModal extends Component {
             name="dayOfWeek"
             value={this.state.dayOfWeek}
             onChange={this.handleDayChange}
+            disabled={this.state.isGoogleEvent}
           >
             {daysOfWeek.map((day) => this.populateDaysBox(day))}
           </select>
@@ -179,10 +188,6 @@ class QuickModal extends Component {
     let startTime = formatToTimeString(this.state.startTime);
     let endTime = formatToTimeString(this.state.endTime);
     let dayOfWeek = parseInt(this.state.dayOfWeek);
-    console.log(
-      "GETTING FORM DATA, this.state.colorTypeId=",
-      this.state.colorTypeId
-    );
     let colorTypeId = parseInt(this.state.colorTypeId);
     let title = this.state.title;
 
@@ -285,7 +290,7 @@ class QuickModal extends Component {
   };
 
   insertDeleteButton = () => {
-    if (this.state.inEditMode) {
+    if (this.state.inEditMode && !this.state.isGoogleEvent) {
       return (
         <Button
           color="danger"
@@ -328,7 +333,9 @@ class QuickModal extends Component {
               this.state.modalHeaderColor || this.state.defaultBgColor,
           }}
         >
-          {this.state.inEditMode
+          {this.state.isGoogleEvent
+            ? this.state.googleEventTitle
+            : this.state.inEditMode
             ? this.state.editEventTitle
             : this.state.addEventTitle}
         </ModalHeader>
@@ -347,6 +354,7 @@ class QuickModal extends Component {
                 maxLength={100}
                 value={this.state.title}
                 invalid={!this.state.validation.title}
+                disabled={this.state.isGoogleEvent}
                 onChange={(e) => {
                   this.setState({ [e.target.name]: [e.target.value] }, () => {
                     this.validateTitle();
@@ -357,14 +365,16 @@ class QuickModal extends Component {
               <FormFeedback>This field is required</FormFeedback>
             </FormGroup>
 
-            <FormGroup>
-              <ColorPicker
-                colorList={this.props.googleColors}
-                selectedColor={this.state.modalHeaderColor}
-                defaultColor={this.state.defaultBgColor}
-                setSelectedColor={this.setSelectedColor}
-              />
-            </FormGroup>
+            {!this.state.isGoogleEvent && (
+              <FormGroup>
+                <ColorPicker
+                  colorList={this.props.googleColors}
+                  selectedColor={this.state.modalHeaderColor}
+                  defaultColor={this.state.defaultBgColor}
+                  setSelectedColor={this.setSelectedColor}
+                />
+              </FormGroup>
+            )}
 
             <FormGroup>{this.renderDayPicker()}</FormGroup>
 
@@ -381,6 +391,7 @@ class QuickModal extends Component {
               >
                 <DatePicker
                   selected={this.state.startTime}
+                  disabled={this.state.isGoogleEvent}
                   onChange={(startTime) => {
                     if (startTime > this.state.endTime) {
                       this.setState({
@@ -412,6 +423,7 @@ class QuickModal extends Component {
               >
                 <DatePicker
                   selected={this.state.endTime}
+                  disabled={this.state.isGoogleEvent}
                   onChange={(endTime) =>
                     this.setState({ endTime }, () => this.validateTime())
                   }
@@ -435,12 +447,14 @@ class QuickModal extends Component {
               {this.insertDeleteButton()}
               <Button
                 onClick={() => {
-                  this.validateInputs();
-                  if (this.allValid()) {
-                    const data = this.getFormData();
-                    this.handleSubmission(data);
-                    this.props.onClose();
+                  if (!this.state.isGoogleEvent) {
+                    this.validateInputs();
+                    if (this.allValid()) {
+                      const data = this.getFormData();
+                      this.handleSubmission(data);
+                    }
                   }
+                  this.props.onClose();
                 }}
                 style={{
                   color: "white",
@@ -448,7 +462,11 @@ class QuickModal extends Component {
                   marginRight: "1rem",
                 }}
               >
-                {this.state.inEditMode ? "Update" : "Add"}
+                {this.state.isGoogleEvent
+                  ? "Close"
+                  : this.state.inEditMode
+                  ? "Update"
+                  : "Add"}
               </Button>
             </FormGroup>
           </ListGroup>
