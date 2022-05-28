@@ -16,3 +16,10 @@ class Event(models.Model):
     endTime = models.TimeField()
     colorTypeId = models.IntegerField()
     dayIndex = models.IntegerField()
+
+
+class Token(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    access_token = models.TextField(max_length=2048, null=True)
+    refresh_token = models.TextField(max_length=2048, null=True)
+    id_token = models.TextField(max_length=2048, null=True)

@@ -58,7 +58,5 @@ drf_example
 
 
 # Google Calendar API
+credentials.py
 credentials.json
-token.txt
-
-

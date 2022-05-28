@@ -1,4 +1,4 @@
-from django.urls import path, include
+from django.urls import path, include, re_path
 
 from . import views, google
 from .views import UserViewSet
@@ -14,6 +14,6 @@ router.register(r'user', UserViewSet)
 urlpatterns = [
     path('signup/', views.signup, name="signup"),
     path('router/', include(router.urls)),
-    path('gcevents/', google.get_google_calendar_events), 
-    path('gcalendar/', google.change_calendar),
+    path('eventsgoogle/', google.get_google_events),
+    re_path(r'api/v1/auth/login/google/$', google.GoogleLoginApi.as_view(), name="test"),
 ]

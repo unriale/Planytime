@@ -29,7 +29,9 @@ function App() {
             path="/signup"
             element={<PrivateRoute Component={<SignupPage />} />}
           />
-          <Route path="/stats" element={<Stats/>}/>
+          <Route path="/stats" element={<Stats />} />
+          {/* if the path doesn't exist -> go to home page
+          <Route path="*" element={<Home />} /> */}
         </Routes>
       </AuthProvider>
     </Router>

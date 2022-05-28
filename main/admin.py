@@ -1,6 +1,7 @@
 from django.contrib import admin
 
-from .models import Note, Event
+from .models import Note, Event, Token
+
 
 class EventAdmin(admin.ModelAdmin):
     list_display = ('user', 'title', 'date', 'startTime', 'endTime')
@@ -9,3 +10,4 @@ class EventAdmin(admin.ModelAdmin):
 
 admin.site.register(Note)
 admin.site.register(Event, EventAdmin)
+admin.site.register(Token)

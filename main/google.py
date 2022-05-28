@@ -1,63 +1,112 @@
-from os import path
-import pickle
-from google.auth.transport.requests import Request
-from rest_framework.response import Response
-from google_auth_oauthlib.flow import InstalledAppFlow
+from rest_framework import serializers
+from rest_framework.views import APIView
+
+from django.shortcuts import redirect
+
+from .services import google_get_tokens, google_get_user_info, google_refresh_access_token
 from googleapiclient.discovery import build
-from rest_framework.decorators import api_view
+import urllib
+import json
 import pandas as pd
-from .models import Event
 import time
 from datetime import datetime
+from .models import Token
+from django.contrib.auth.models import User
 
-SCOPES = ['https://www.googleapis.com/auth/calendar.events']
+from rest_framework.response import Response
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 
-
-def get_crendetials_google():
-    flow = InstalledAppFlow.from_client_secrets_file(
-        "credentials.json", SCOPES)
-    creds = flow.run_local_server(port=7000)
-    pickle.dump(creds, open("token.txt", "wb"))
-    return creds
+from decouple import config
 
 
-def get_all_events(request):
-    creds = None
-    if path.exists("token.txt"):
-        creds = pickle.load(open("token.txt", "rb"))
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            creds = get_crendetials_google()
-    result = []
+class GoogleLoginApi(APIView):
+    class InputSerializer(serializers.Serializer):
+        code = serializers.CharField(required=False)
+        error = serializers.CharField(required=False)
+
+    def get(self, request, *args, **kwargs):
+
+        input_serializer = self.InputSerializer(data=request.GET)
+        input_serializer.is_valid(raise_exception=True)
+
+        validated_data = input_serializer.validated_data
+
+        code = validated_data.get('code')
+        error = validated_data.get('error')
+
+        domain = config('REACT_APP_BASE_BACKEND_URL')
+        api_uri = "/api/v1/auth/login/google/"
+        redirect_uri = f'{domain}{api_uri}'
+
+        tokens = google_get_tokens(code=code, redirect_uri=redirect_uri)
+
+        access_token = tokens["access_token"]
+        refresh_token = tokens["refresh_token"]
+        id_token = tokens["id_token"]
+
+        user_data = google_get_user_info(access_token=access_token)
+
+        user = None
+        if User.objects.filter(email=user_data["email"]).exists():
+            user = User.objects.get(email=user_data["email"])
+            if not Token.objects.filter(user=user).exists():
+                Token.objects.create(
+                    user=user, access_token=access_token, refresh_token=refresh_token, id_token=id_token)
+            else:
+                Token.objects.update(
+                    user=user, access_token=access_token, refresh_token=refresh_token, id_token=id_token)
+
+        response = redirect(config('REACT_APP_BASE_FRONTEND_URL'))
+        return response
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_google_events(request):
+    user = request.user
+    if not Token.objects.filter(user=user).exists():
+        return Response({"message": "google calendar is not integrated yet"})
+
+    tokens = Token.objects.get(user=user)
+    access_token = tokens.access_token
+    refresh_token = tokens.refresh_token
+
+    response = None
 
     try:
-        service = build("calendar", "v3", credentials=creds)
-        response = service.events().list(calendarId="primary").execute()
-        for event in response["items"]:
-            title = event.get("summary")
-            obj = {}
-            if title:
-                obj["title"] = title
-                obj["start"] = event["start"]
-                obj["end"] = event["end"]
-                result.append(obj)
-        result = reformat_events(request, result)
-    except OSError as err:
-        return Response({'error': "OS error: {0}".format(err)}, status=400)
-    return Response(result, status=200)
+        calendar_url = '{0}?access_token={1}'.format(
+            config('REACT_APP_CALENDAR_URL'), access_token)
+        response = fetch_google_events(request, calendar_url)
+    except:
+        new_tokens = google_refresh_access_token(refresh_token)
+        Token.objects.update(user=user,
+                             access_token=new_tokens["access_token"],
+                             id_token=new_tokens["id_token"])
+        calendar_url = '{0}?access_token={1}'.format(
+            config('REACT_APP_CALENDAR_URL'), new_tokens["access_token"])
+        response = fetch_google_events(request, calendar_url)
+    return Response(response)
 
 
-@api_view(['GET'])
-def get_google_calendar_events(request):
-    return get_all_events(request)
+def fetch_google_events(request, calendar_url):
+    data = ''
+    result = []
 
+    with urllib.request.urlopen(calendar_url) as url:
+        data = json.loads(url.read())
 
-@api_view(['GET'])
-def change_calendar(request):
-    get_crendetials_google()
-    return get_all_events(request)
+    for event in data["items"]:
+        title = event.get("summary")
+        obj = {}
+        if title:
+            obj["title"] = title
+            obj["start"] = event["start"]
+            obj["end"] = event["end"]
+            result.append(obj)
+
+    result = reformat_events(request, result)
+    return result
 
 
 def reformat_events(request, events):

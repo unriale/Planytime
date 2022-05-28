@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useCallback } from "react";
 import AuthContext from "../../../context/AuthContext";
 import styled from "styled-components";
 
@@ -46,13 +46,11 @@ const GoogleCalendar = (props) => {
   let { authTokens } = useContext(AuthContext);
 
   useEffect(() => {
-    if (localStorage.getItem("authorizedGoogleCalendar")) {
-      getEvents();
-    }
+    getGoogleEvents();
   }, []);
 
-  const getEvents = async () => {
-    let response = await fetch("http://localhost:8000/gcevents/", {
+  const getGoogleEvents = async () => {
+    let response = await fetch(`${process.env.REACT_APP_SCOPE}/eventsgoogle/`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -60,28 +58,35 @@ const GoogleCalendar = (props) => {
       },
     });
     let data = await response.json();
-
-    if (data) {
-      props.sendEvents(data);
-    }
+    if (data.message) return;
+    if (data) props.sendEvents(data);
+    else alert("Error while fetching Google events");
   };
 
-  const changeCalendar = async () => {
-    console.log("Retrieveing events from Google Calendar");
-    let response = await fetch("http://localhost:8000/gcalendar/", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + String(authTokens.access),
-      },
-    });
-    let data = await response.json();
+  const openGoogleLoginPage = useCallback(() => {
+    const googleAuthUrl = "https://accounts.google.com/o/oauth2/v2/auth";
+    const redirectUri = "api/v1/auth/login/google/";
 
-    if (data) {
-      props.sendEvents(data);
-      localStorage.setItem("authorizedGoogleCalendar", 1);
-    }
-  };
+    const scope = [
+      "https://www.googleapis.com/auth/userinfo.email",
+      "https://www.googleapis.com/auth/userinfo.profile",
+      "https://www.googleapis.com/auth/calendar.events",
+    ].join(" ");
+
+    const params = {
+      lol: "SOME_RADNOM",
+      response_type: "code",
+      client_id: process.env.REACT_APP_CLIENT_ID,
+      redirect_uri: `${process.env.REACT_APP_BASE_BACKEND_URL}/${redirectUri}`,
+      prompt: "select_account",
+      access_type: "offline",
+      scope,
+    };
+
+    const urlParams = new URLSearchParams(params).toString();
+
+    window.location = `${googleAuthUrl}?${urlParams}`;
+  }, []);
 
   return (
     <>
@@ -90,7 +95,9 @@ const GoogleCalendar = (props) => {
           <GoogleIconWrapper>
             <GoogleIcon />
           </GoogleIconWrapper>
-          <Button onClick={changeCalendar}>Integrate Google Calendar</Button>
+          <Button onClick={openGoogleLoginPage}>
+            Integrate Google Calendar
+          </Button>
         </GoogleButtonWrapper>
       </div>
     </>
