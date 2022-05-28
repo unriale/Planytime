@@ -50,7 +50,7 @@ const GoogleCalendar = (props) => {
   }, []);
 
   const getGoogleEvents = async () => {
-    let response = await fetch(`${process.env.REACT_APP_SCOPE}/eventsgoogle/`, {
+    let response = await fetch(`${process.env.REACT_APP_BASE_BACKEND_URL}/eventsgoogle/`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
