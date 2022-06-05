@@ -50,13 +50,16 @@ const GoogleCalendar = (props) => {
   }, []);
 
   const getGoogleEvents = async () => {
-    let response = await fetch(`${process.env.REACT_APP_BASE_BACKEND_URL}/eventsgoogle/`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + String(authTokens.access),
-      },
-    });
+    let response = await fetch(
+      `${process.env.REACT_APP_BASE_BACKEND_URL}/eventsgoogle/`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + String(authTokens.access),
+        },
+      }
+    );
     let data = await response.json();
     if (data.message) return;
     if (data) props.sendEvents(data);
@@ -74,7 +77,6 @@ const GoogleCalendar = (props) => {
     ].join(" ");
 
     const params = {
-      lol: "SOME_RADNOM",
       response_type: "code",
       client_id: process.env.REACT_APP_CLIENT_ID,
       redirect_uri: `${process.env.REACT_APP_BASE_BACKEND_URL}/${redirectUri}`,
