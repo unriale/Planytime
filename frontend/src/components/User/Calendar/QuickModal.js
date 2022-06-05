@@ -455,8 +455,7 @@ class QuickModal extends Component {
                       this.handleSubmission(data);
                       this.props.onClose();
                     }
-                  }
-                  
+                  } else this.props.onClose();
                 }}
                 style={{
                   color: "white",
