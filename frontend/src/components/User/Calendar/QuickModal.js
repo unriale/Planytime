@@ -319,6 +319,7 @@ class QuickModal extends Component {
           top: "10", // original 25
         }}
         isOpen={modalOpen}
+        toggle={this.closeHandler}
         modalTransition={{ timeout: 10 }}
         backdropTransition={{ timeout: 10 }}
       >
