@@ -127,3 +127,9 @@ export const Text = styled.span`
   color: #fff;
   font-size: 14px;
 `;
+
+export const Error = styled.label`
+  color: #ce0000;
+  font-size: 15px;
+  margin-top: 1rem;
+`;

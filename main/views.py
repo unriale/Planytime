@@ -27,5 +27,5 @@ def signup(request):
             print("User was created")
             serializer = UserSerializer(user)
             return Response(serializer.data, status=200)
-        return Response({'error': 'email exists'}, status=400)
-    return Response({'error': 'username exists'}, status=400)
+        return Response({'error': 'Email already exists'}, status=400)
+    return Response({'error': 'Username already exists'}, status=400)
