@@ -13,10 +13,17 @@ import {
 } from "./SigninElements";
 
 import { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import AuthContext from "../../context/AuthContext";
 
 const SignIn = () => {
   let { loginUser } = useContext(AuthContext);
+
+  const navigate = useNavigate();
+
+  const openSignUp = () => {
+    navigate('/signup');
+  };
 
   return (
     <>
@@ -32,7 +39,7 @@ const SignIn = () => {
               <FormLabel htmlFor="password">Password</FormLabel>
               <FormInput name="password" type="password" required />
               <FormButton type="submit">Continue</FormButton>
-              <Text>Forgot password?</Text>
+              <Text onClick={openSignUp}>Sign up</Text>
             </Form>
           </FormContent>
         </FormWrap>

@@ -9,6 +9,7 @@ import {
   Icon,
   FormIcon,
   Error,
+  Text,
 } from "../SignIn/SigninElements";
 
 import { useState } from "react";
@@ -99,6 +100,10 @@ const SignUp = () => {
     }
   };
 
+  const openSignIn = () => {
+    navigate("/signin");
+  };
+
   return (
     <>
       <Container>
@@ -131,6 +136,7 @@ const SignUp = () => {
                 value={password}
               />
               <FormButton type="submit">Sign Up</FormButton>
+              <Text onClick={openSignIn}>Sign In</Text>
               <Error>{error}</Error>
               <Error>{errorPassword}</Error>
             </Form>
