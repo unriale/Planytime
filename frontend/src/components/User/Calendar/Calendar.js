@@ -6,6 +6,7 @@ import Modal from "../../Modals/GenericModal";
 import Guide from "./WelcomeGuide";
 import QuickModal from "./QuickModal";
 import googleColors from "./data/googleColors";
+import ColorIndex from "./utils/colorIndex";
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -18,20 +19,6 @@ import GoogleCalendar from "./GoogleCalendar";
 
 const DragAndDropCalendar = withDragAndDrop(Calendar);
 const localizer = momentLocalizer(moment);
-
-const colorIndex = (colorTypes) => {
-  // transform array of colors into one object (to be used as an index for O(1) lookup)
-  const colorIndex = {};
-  const colorKeys = Object.keys(colorTypes[0]).filter((key) => key !== "id"); // ['color']
-  for (const color of colorTypes) {
-    const colorData = {};
-    colorKeys.forEach((key) => {
-      colorData[key] = color[key];
-    });
-    colorIndex[color.id] = colorData;
-  }
-  return colorIndex; // {1: {color: '#123123'}, 2:{...}}
-};
 
 class MyCalendar extends Component {
   static contextType = AuthContext;
@@ -46,7 +33,7 @@ class MyCalendar extends Component {
     newEventStart: null,
     newEventEnd: null,
     createQuickModal: false,
-    colorIndex: colorIndex(googleColors),
+    colorIndex: ColorIndex(googleColors),
   };
 
   async componentDidMount() {
@@ -71,16 +58,19 @@ class MyCalendar extends Component {
 
   saveEventsToLocal = async () => {
     if (this.state.eventsToAdd.length !== 0) {
-      let response = await fetch("http://localhost:8000/api/eventsave/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + String(this.context.authTokens.access),
-        },
-        body: JSON.stringify({
-          events: this.state.eventsToAdd,
-        }),
-      });
+      let response = await fetch(
+        `${process.env.REACT_APP_BASE_BACKEND_URL}/api/eventsave/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + String(this.context.authTokens.access),
+          },
+          body: JSON.stringify({
+            events: this.state.eventsToAdd,
+          }),
+        }
+      );
 
       if (response.status === 200) {
         let data = await response.json();
@@ -112,13 +102,16 @@ class MyCalendar extends Component {
 
   loadSavedEvents = async () => {
     console.log("Loading events from a DB...");
-    let response = await fetch("http://localhost:8000/api/events/", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + String(this.context.authTokens.access),
-      },
-    });
+    let response = await fetch(
+      `${process.env.REACT_APP_BASE_BACKEND_URL}/api/events/`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + String(this.context.authTokens.access),
+        },
+      }
+    );
     let data = await response.json();
     if (data) {
       console.log("Events before reformatting are ", data);
@@ -214,16 +207,19 @@ class MyCalendar extends Component {
   };
 
   sendUpdatedEvent = async (eventData) => {
-    let response = await fetch("http://localhost:8000/api/eventupdate/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + String(this.context.authTokens.access),
-      },
-      body: JSON.stringify({
-        event: eventData,
-      }),
-    });
+    let response = await fetch(
+      `${process.env.REACT_APP_BASE_BACKEND_URL}/api/eventupdate/`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + String(this.context.authTokens.access),
+        },
+        body: JSON.stringify({
+          event: eventData,
+        }),
+      }
+    );
     return response;
   };
 
@@ -259,16 +255,19 @@ class MyCalendar extends Component {
   };
 
   removeEventHandler = async (event) => {
-    let response = await fetch("http://localhost:8000/api/eventdelete/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + String(this.context.authTokens.access),
-      },
-      body: JSON.stringify({
-        event: event,
-      }),
-    });
+    let response = await fetch(
+      `${process.env.REACT_APP_BASE_BACKEND_URL}/api/eventdelete/`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + String(this.context.authTokens.access),
+        },
+        body: JSON.stringify({
+          event: event,
+        }),
+      }
+    );
     if (response.status === 200) {
       const { events } = this.state;
       const remaining = events.filter((ev) => ev != event);
@@ -279,8 +278,18 @@ class MyCalendar extends Component {
   };
 
   saveGoogleEvents = (events) => {
-    let googleEvents = events.map((event) => this.reformatEventData(event));
-    googleEvents = googleEvents.map(event => ({...event, isGoogleEvent: true}))
+    console.log("EVENTS = ", events);
+    let googleEvents;
+    if (Object.keys(events).length === 0) {
+      googleEvents = [];
+      localStorage.removeItem("googleEvents");
+    } else {
+      googleEvents = events.map((event) => this.reformatEventData(event));
+      googleEvents = googleEvents.map((event) => ({
+        ...event,
+        isGoogleEvent: true,
+      }));
+    }
     this.setState({ googleEventsToAdd: googleEvents });
     this.setState({ events: [...this.state.dbEvents, ...googleEvents] });
   };

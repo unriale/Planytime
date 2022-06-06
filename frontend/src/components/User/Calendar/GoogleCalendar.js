@@ -61,8 +61,10 @@ const GoogleCalendar = (props) => {
       }
     );
     let data = await response.json();
-    if (data.message) return;
-    if (data) props.sendEvents(data);
+    if (data.message) {
+      props.sendEvents({});
+    }
+    else if (data) props.sendEvents(data);
     else alert("Error while fetching Google events");
   };
 
