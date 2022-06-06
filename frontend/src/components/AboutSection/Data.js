@@ -4,7 +4,7 @@ export const homeObjOne = {
   lightText: true,
   lightTextDesc: true,
   topLine: "Plan your day",
-  headline: "With effectivity and 0 effort",
+  headline: "With 0 effort and 100% results",
   description:
     "Just add events and tasks for the whole day and algorithm will help you adjust them better!",
   buttonLabel: "Get Started",
@@ -22,10 +22,10 @@ export const homeObjTwo = {
   lightBg: true,
   lightText: false,
   lightTextDesc: false,
-  topLine: "Plan your day",
-  headline: "With effectivity and 0 effort",
+  topLine: "Review stats",
+  headline: "Get to know your full of activities months",
   description:
-    "Just add events and tasks for the whole day and algorithm will help you adjust them better!",
+    "Visualized statistics will help you figure out your daily activity. Get all stats by clicking just one button!",
   buttonLabel: "Learn More",
   imgStart: true,
   img: require("../../images/svg-2.svg").default,
@@ -43,8 +43,7 @@ export const homeObjThree = {
   lightTextDesc: true,
   topLine: "Join us",
   headline: "Creating an account is extremely easy",
-  description:
-    "Just add events and tasks for the whole day and algorithm will help you adjust them better!",
+  description: "Just fill in 3 fields and you are done!",
   buttonLabel: "Sign Up",
   imgStart: false,
   img: require("../../images/svg-3.svg").default,

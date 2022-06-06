@@ -26,10 +26,9 @@ const InfoSection = () => {
         <VideoBg autoPlay loop muted src={Video} type="video/mp4" />
       </InfoBg>
       <InfoContent>
-        <InfoH1>Some text here can be idk what balla</InfoH1>
+        <InfoH1>Plan your days and weeks effectively with Planytime</InfoH1>
         <InfoP>
-          Let's plan your time and bla bla some text planning hey go with me.
-          This is some more text planning hey go with me.
+          Start today and achieve your goals faster. Get more done in less time, and prevent procrastination.
         </InfoP>
         <InfoBtnWrapper>
           <Button to="/signup" onMouseEnter={onHover} onMouseLeave={onHover}>

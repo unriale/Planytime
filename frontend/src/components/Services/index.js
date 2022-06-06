@@ -15,27 +15,36 @@ import Icon3 from "../../images/svg-6.svg";
 const Services = () => {
   return (
     <ServicesContainer id="services">
-      <ServicesH1>Our Services</ServicesH1>
+      <ServicesH1>What We Offer</ServicesH1>
       <ServiceWrapper>
         <ServicesCard>
           <ServicesIcon src={Icon1} />
-          <ServicesH2>Reduce expenses</ServicesH2>
+          <ServicesH2>
+            <b>Adaptive UI</b>
+          </ServicesH2>
           <ServicesP>
-            We help reduce your pain when planning your days and overall week.
+            Our user interface adapts its elements and layout to your needs -
+            use the website from any device, such as laptop, tablet or phone!
           </ServicesP>
         </ServicesCard>
         <ServicesCard>
           <ServicesIcon src={Icon2} />
-          <ServicesH2>Virtual offices</ServicesH2>
+          <ServicesH2>
+            <b>Google Calendar sync</b>
+          </ServicesH2>
           <ServicesP>
-            We help reduce your pain when planning your days and overall week.
+            You can sync you calendar with Planytime if you got meetings/plans
+            in your Google Calendar and want to see them on our website!
           </ServicesP>
         </ServicesCard>
         <ServicesCard>
           <ServicesIcon src={Icon3} />
-          <ServicesH2>Premium benefit</ServicesH2>
+          <ServicesH2>
+            <b>Easy-to-Use Calendar</b>
+          </ServicesH2>
           <ServicesP>
-            We help reduce your pain when planning your days and overall week.
+            Planytime users feel comfortable and are able to get things done
+            more quickly with the Easy-to-Use Calendar!
           </ServicesP>
         </ServicesCard>
       </ServiceWrapper>
