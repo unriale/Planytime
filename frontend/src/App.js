@@ -15,7 +15,6 @@ function App() {
     <Router>
       <AuthProvider>
         <Routes>
-          {/* <Route exact path="/" element={<Home />} /> */}
           <Route
             exact
             path="/"
