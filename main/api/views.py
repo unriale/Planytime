@@ -121,3 +121,14 @@ def get_month_events(request):
         data = cursor.fetchall()
         data.sort(key=lambda tup: tup[0])
         return Response(data, status=200)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_color_events(request):
+    user = request.user
+
+    with connection.cursor() as cursor:
+        cursor.execute(f"SELECT \"colorTypeId\", COUNT(id) FROM main_event WHERE user_id={user.id} GROUP BY \"colorTypeId\"")
+        data = cursor.fetchall()
+        return Response(data, status=200)

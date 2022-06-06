@@ -33,6 +33,7 @@ const MonthEvents = () => {
   });
 
   useEffect(() => {
+    loadMonthEvents();
     function handleResize() {
       setWindowSize({
         width: window.innerWidth,
@@ -74,10 +75,6 @@ const MonthEvents = () => {
       new Date(number.toString())
     );
   };
-
-  useEffect(() => {
-    loadMonthEvents();
-  }, []);
 
   return (
     <>
