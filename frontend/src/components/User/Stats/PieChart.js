@@ -1,5 +1,6 @@
 import React, { PureComponent } from "react";
 import { PieChart, Pie, Sector, Cell, ResponsiveContainer } from "recharts";
+import styled from "styled-components";
 
 const data = [
   { name: "Group A", value: 2 },
@@ -29,11 +30,24 @@ const COLORS = [
   "#dc2127",
 ];
 
+const WrapContainer = styled.div`
+    width: 50%;
+    height: 650px;
+    display: inline-block;
+
+    @media screen and (max-width: 820px){
+        display: block;
+        width: 100%;
+        height: 350px;
+        padding: 1.75rem;
+    } 
+`;
+
 export default class PieChartStat extends PureComponent {
   render() {
     return (
       <>
-        <div style={{ width: "50%", height: 650, display: "inline-block" }}>
+        <WrapContainer>
           <ResponsiveContainer>
             <PieChart>
               <Pie data={data} fill="#8884d8" dataKey="value" label>
@@ -46,7 +60,7 @@ export default class PieChartStat extends PureComponent {
               </Pie>
             </PieChart>
           </ResponsiveContainer>
-        </div>
+        </WrapContainer>
       </>
     );
   }

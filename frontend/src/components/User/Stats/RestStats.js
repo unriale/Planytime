@@ -12,6 +12,17 @@ import {
   Legend,
 } from "recharts";
 
+import styled from "styled-components";
+
+const WrapContainer = styled.div`
+  width: 100%;
+  height: 300px;
+
+  @media screen and (max-width: 820px) {
+    padding-right: 1rem;
+  }
+`;
+
 const data = [
   {
     name: "Sunday",
@@ -60,7 +71,7 @@ const data = [
 export default class RestStats extends PureComponent {
   render() {
     return (
-      <div style={{ width: "100%", height: 300 }}>
+      <WrapContainer>
         <ResponsiveContainer>
           <ComposedChart
             width={500}
@@ -88,7 +99,7 @@ export default class RestStats extends PureComponent {
             <Line type="monotone" dataKey="uv" stroke="#ff7300" />
           </ComposedChart>
         </ResponsiveContainer>
-      </div>
+      </WrapContainer>
     );
   }
 }
