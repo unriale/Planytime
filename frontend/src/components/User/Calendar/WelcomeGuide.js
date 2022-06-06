@@ -3,17 +3,21 @@ import React from "react";
 const Guide = () => {
   return (
     <React.Fragment>
-      <strong>Creating Events</strong>
+     <strong>Creating Events</strong>
       <ul>
-        <li>Some Instruction</li>
-        <li>Some Instruction</li>
-        <li>Some Instruction</li>
+        <li>Use the (+) Button</li>
+        <li>Click on Desired Start Time</li>
+        <li>Click & Drag to Select Desired Time Slot</li>
       </ul>
-      <strong>Creating Events</strong>
+      <strong>Modifying Events</strong>
       <ul>
-        <li>Some Instruction</li>
-        <li>Some Instruction</li>
-        <li>Some Instruction</li>
+        <li>Drag and Drop Events to Different Time Slots</li>
+        <li>Click to Edit Event Details</li>
+      </ul>
+      <strong>Integrating Google Calendar</strong>
+      <ul>
+        <li>Sign in your Google account (choose the same email as for the website)</li>
+        <li>Allow Planytime to transfer events from your Google Calendar</li>
       </ul>
     </React.Fragment>
   );

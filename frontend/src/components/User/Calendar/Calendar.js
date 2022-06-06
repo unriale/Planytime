@@ -136,6 +136,7 @@ class MyCalendar extends Component {
   };
 
   closeGuideModal = () => this.setState({ showGuideModal: false });
+  openGuideModal = () => this.setState({ showGuideModal: true });
 
   slotSelectionHandler = (slotInfo) => {
     let newEventStart = slotInfo.start;
@@ -278,7 +279,6 @@ class MyCalendar extends Component {
   };
 
   saveGoogleEvents = (events) => {
-    console.log("EVENTS = ", events);
     let googleEvents;
     if (Object.keys(events).length === 0) {
       googleEvents = [];
@@ -294,12 +294,15 @@ class MyCalendar extends Component {
     this.setState({ events: [...this.state.dbEvents, ...googleEvents] });
   };
 
+ 
+
   render() {
     return (
       <div>
         <GoogleCalendar
           sendEvents={this.saveGoogleEvents}
           events={this.state.events}
+          openWelcomeGuide = {this.openGuideModal}
         />
         <DragAndDropCalendar
           style={{ flex: 1, minHeight: "90vh", margin: "10px" }}

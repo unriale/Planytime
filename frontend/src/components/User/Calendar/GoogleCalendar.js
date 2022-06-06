@@ -42,6 +42,24 @@ const Button = styled.button`
   padding-left: 3rem;
 `;
 
+const HowToUseButton = styled.button`
+  position: fixed;
+  right: 5px;
+  bottom: 5px;
+  z-index: 100;
+  border-radius: 2.55em;
+  background-color: #64dadf;
+  border: 2px solid #64dadf;
+  color: white;
+  width: 3.5rem;
+  height: 3.5rem;
+
+  &:hover {
+    background-color: #5dc7cb;
+    transition: all 0.2s ease-in-out;
+  }
+`;
+
 const GoogleCalendar = (props) => {
   let { authTokens } = useContext(AuthContext);
 
@@ -63,8 +81,7 @@ const GoogleCalendar = (props) => {
     let data = await response.json();
     if (data.message) {
       props.sendEvents({});
-    }
-    else if (data) props.sendEvents(data);
+    } else if (data) props.sendEvents(data);
     else alert("Error while fetching Google events");
   };
 
@@ -103,6 +120,9 @@ const GoogleCalendar = (props) => {
             Integrate Google Calendar
           </Button>
         </GoogleButtonWrapper>
+        <HowToUseButton onClick={props.openWelcomeGuide}>
+          <big>?</big>
+        </HowToUseButton>
       </div>
     </>
   );
