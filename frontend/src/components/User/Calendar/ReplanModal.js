@@ -4,6 +4,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import styled from "styled-components";
 import { VscCalendar } from "react-icons/vsc";
+import { FaLongArrowAltDown } from "react-icons/fa";
 import moment from "moment";
 
 const DateWrapper = styled.div`
@@ -13,11 +14,46 @@ const DateWrapper = styled.div`
   margin: 0 0.1rem;
 `;
 
+const ReplanButton = styled.button`
+  color: white;
+  background: #64dadf;
+  margin-top: 1rem;
+  border-radius: 10px;
+  border: none;
+  height: 35px;
+  width: 75px;
+  &:hover {
+    background: #60cbd0;
+  }
+`;
+
 class ReplanModal extends Component {
   state = {
-    dateRange: null,
     startDate: null,
     endDate: null,
+    valid: true,
+    errorMessage: "",
+  };
+
+  validateDate = () => {
+    if (!this.state.startDate) {
+      this.setState({
+        valid: false,
+        errorMessage: "Start date cannot be empty!",
+      });
+    } else if (!this.state.endDate) {
+      this.setState({
+        valid: false,
+        errorMessage: "End date cannot be empty!",
+      });
+    } else if (this.state.endDate < this.state.startDate) {
+      this.setState({
+        valid: false,
+        errorMessage: "End date must be greater than start date!",
+      });
+    } else {
+      this.setState({ valid: true });
+    }
   };
 
   render() {
@@ -50,10 +86,16 @@ class ReplanModal extends Component {
           style={{
             position: "relative",
             top: "1em",
-            height: "250px",
+            height: "270px",
           }}
         >
-          <p>Choose start and end dates for replanning your schedule:</p>
+          <p>
+            Choose <b>start</b> and <b>end</b> dates from your calendar to
+            organize your schedule!
+          </p>
+          <div style={{ textAlign: "center" }}>
+            <FaLongArrowAltDown />
+          </div>
           <DateWrapper>
             <DatePicker
               className="form-control text-center"
@@ -82,17 +124,19 @@ class ReplanModal extends Component {
               )}
             />
           </DateWrapper>
+          {!this.state.valid && (
+            <div className="text-danger" style={{ fontSize: "14px", textAlign: "center" }}>
+              {this.state.errorMessage}
+            </div>
+          )}
           <FormGroup style={{ textAlign: "center" }}>
-            <Button
-              onClick={() => {}}
-              style={{
-                color: "white",
-                background: "#64dadf",
-                marginTop: "1rem",
+            <ReplanButton
+              onClick={() => {
+                this.validateDate();
               }}
             >
               Replan
-            </Button>
+            </ReplanButton>
           </FormGroup>
         </ModalBody>
       </Modal>
