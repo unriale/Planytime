@@ -56,6 +56,15 @@ class ReplanModal extends Component {
     }
   };
 
+  resetValues = () => {
+    this.setState({ startDate: null, endDate: null, valid: true });
+  };
+
+  closeHandler = () => {
+    this.props.onClose();
+    this.resetValues();
+  };
+
   render() {
     return (
       <Modal
@@ -68,6 +77,7 @@ class ReplanModal extends Component {
         isOpen={this.props.modalOpen}
         modalTransition={{ timeout: 10 }}
         backdropTransition={{ timeout: 10 }}
+        toggle={this.closeHandler}
       >
         <ModalHeader
           style={{
@@ -96,6 +106,7 @@ class ReplanModal extends Component {
           <div style={{ textAlign: "center" }}>
             <FaLongArrowAltDown />
           </div>
+
           <DateWrapper>
             <DatePicker
               className="form-control text-center"
@@ -125,7 +136,10 @@ class ReplanModal extends Component {
             />
           </DateWrapper>
           {!this.state.valid && (
-            <div className="text-danger" style={{ fontSize: "14px", textAlign: "center" }}>
+            <div
+              className="text-danger"
+              style={{ fontSize: "14px", textAlign: "center" }}
+            >
               {this.state.errorMessage}
             </div>
           )}
@@ -133,6 +147,10 @@ class ReplanModal extends Component {
             <ReplanButton
               onClick={() => {
                 this.validateDate();
+                if (this.state.valid) {
+                  // send data to a server
+                  this.closeHandler();
+                }
               }}
             >
               Replan

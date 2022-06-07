@@ -158,6 +158,12 @@ class MyCalendar extends Component {
     });
   };
 
+  closeReplanModalHandler = () => {
+    this.setState({
+      createReplanModal: false,
+    });
+  };
+
   updateCalendarFromQuickCreate = (newEvents) => {
     this.setState({ eventsToAdd: newEvents });
     let newEventsArr = newEvents.map((ev) => this.reformatEventData(ev));
@@ -297,9 +303,8 @@ class MyCalendar extends Component {
   };
 
   openReplanModal = () => {
-    this.setState({createReplanModal: true});
-  }
-
+    this.setState({ createReplanModal: true });
+  };
 
   render() {
     return (
@@ -307,8 +312,8 @@ class MyCalendar extends Component {
         <GoogleCalendar
           sendEvents={this.saveGoogleEvents}
           events={this.state.events}
-          openWelcomeGuide = {this.openGuideModal}
-          openReplanModal = {this.openReplanModal}
+          openWelcomeGuide={this.openGuideModal}
+          openReplanModal={this.openReplanModal}
         />
         <DragAndDropCalendar
           style={{ flex: 1, minHeight: "90vh", margin: "10px" }}
@@ -342,6 +347,7 @@ class MyCalendar extends Component {
         />
         <ReplanModal
           modalOpen={this.state.createReplanModal}
+          onClose={this.closeReplanModalHandler}
         />
         <Modal
           modalOpen={this.state.showGuideModal}
