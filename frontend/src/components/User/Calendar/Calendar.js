@@ -5,6 +5,7 @@ import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
 import Modal from "../../Modals/GenericModal";
 import Guide from "./WelcomeGuide";
 import QuickModal from "./QuickModal";
+import ReplanModal from "./ReplanModal";
 import googleColors from "./data/googleColors";
 import ColorIndex from "./utils/colorIndex";
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
@@ -33,6 +34,7 @@ class MyCalendar extends Component {
     newEventStart: null,
     newEventEnd: null,
     createQuickModal: false,
+    createReplanModal: false,
     colorIndex: ColorIndex(googleColors),
   };
 
@@ -294,7 +296,10 @@ class MyCalendar extends Component {
     this.setState({ events: [...this.state.dbEvents, ...googleEvents] });
   };
 
- 
+  openReplanModal = () => {
+    this.setState({createReplanModal: true});
+  }
+
 
   render() {
     return (
@@ -303,6 +308,7 @@ class MyCalendar extends Component {
           sendEvents={this.saveGoogleEvents}
           events={this.state.events}
           openWelcomeGuide = {this.openGuideModal}
+          openReplanModal = {this.openReplanModal}
         />
         <DragAndDropCalendar
           style={{ flex: 1, minHeight: "90vh", margin: "10px" }}
@@ -333,6 +339,9 @@ class MyCalendar extends Component {
           sendEventToCalendar={this.updateCalendarFromQuickCreate}
           showUpdatedEvent={this.renderUpdatedEvent}
           delete={this.removeEventHandler}
+        />
+        <ReplanModal
+          modalOpen={this.state.createReplanModal}
         />
         <Modal
           modalOpen={this.state.showGuideModal}

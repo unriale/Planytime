@@ -32,6 +32,13 @@ const GoogleIcon = styled.img.attrs({
   height: 95%;
 `;
 
+const PlanIcon = styled.img.attrs({
+  src: "https://cdn-icons-png.flaticon.com/512/4838/4838786.png",
+})`
+  width: 95%;
+  height: 95%;
+`;
+
 const Button = styled.button`
   float: right;
   margin: 11px 11px 0 0;
@@ -123,6 +130,12 @@ const GoogleCalendar = (props) => {
         <HowToUseButton onClick={props.openWelcomeGuide}>
           <big>?</big>
         </HowToUseButton>
+        <GoogleButtonWrapper>
+          <GoogleIconWrapper>
+            <PlanIcon />
+          </GoogleIconWrapper>
+          <Button onClick={props.openReplanModal}>Replan</Button>
+        </GoogleButtonWrapper>
       </div>
     </>
   );
