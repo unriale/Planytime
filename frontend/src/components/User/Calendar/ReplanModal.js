@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { VscCalendar } from "react-icons/vsc";
 import { FaLongArrowAltDown } from "react-icons/fa";
 import moment from "moment";
+import AuthContext from "../../../context/AuthContext";
 
 const DateWrapper = styled.div`
   display: inline-block;
@@ -28,6 +29,8 @@ const ReplanButton = styled.button`
 `;
 
 class ReplanModal extends Component {
+  static contextType = AuthContext;
+
   state = {
     startDate: null,
     endDate: null,
@@ -35,13 +38,34 @@ class ReplanModal extends Component {
     errorMessage: "",
   };
 
-  validateDate = () => {
-    if (!this.state.startDate) {
+  sendReplanDays = async () => {
+    let response = await fetch(
+      `${process.env.REACT_APP_BASE_BACKEND_URL}/api/replan/`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + String(this.context.authTokens.access),
+        },
+        body: JSON.stringify({
+          startDate: this.state.startDate,
+          endDate: this.state.endDate,
+        }),
+      }
+    );
+    let data = await response.json();
+    if (response.status === 200) {
+      this.props.loadSavedEvents();
+    }
+  };
+
+  sendDateIfValid = () => {
+    if (this.state.startDate == null) {
       this.setState({
         valid: false,
         errorMessage: "Start date cannot be empty!",
       });
-    } else if (!this.state.endDate) {
+    } else if (this.state.endDate == null) {
       this.setState({
         valid: false,
         errorMessage: "End date cannot be empty!",
@@ -53,6 +77,8 @@ class ReplanModal extends Component {
       });
     } else {
       this.setState({ valid: true });
+      this.sendReplanDays();
+      this.closeHandler();
     }
   };
 
@@ -146,11 +172,7 @@ class ReplanModal extends Component {
           <FormGroup style={{ textAlign: "center" }}>
             <ReplanButton
               onClick={() => {
-                this.validateDate();
-                if (this.state.valid) {
-                  // send data to a server
-                  this.closeHandler();
-                }
+                this.sendDateIfValid();
               }}
             >
               Replan

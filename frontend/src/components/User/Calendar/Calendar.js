@@ -348,6 +348,7 @@ class MyCalendar extends Component {
         <ReplanModal
           modalOpen={this.state.createReplanModal}
           onClose={this.closeReplanModalHandler}
+          loadSavedEvents={this.loadSavedEvents}
         />
         <Modal
           modalOpen={this.state.showGuideModal}

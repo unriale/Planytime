@@ -26,45 +26,45 @@ const WrapContainer = styled.div`
 const data = [
   {
     name: "Sunday",
-    uv: 590,
-    pv: 800,
-    amt: 1400,
+    diff: 4,
+    res: 6,
+    init: 10,
   },
   {
     name: "Monday",
-    uv: 868,
-    pv: 967,
-    amt: 1506,
+    diff: 1,
+    res: 6,
+    init: 7,
   },
   {
     name: "Tuesday",
-    uv: 1397,
-    pv: 1098,
-    amt: 989,
+    diff: 4,
+    res: 8,
+    init: 12,
   },
   {
     name: "Wednesday",
-    uv: 1480,
-    pv: 1200,
-    amt: 1228,
+    diff: -2,
+    res: 6,
+    init: 4,
   },
   {
     name: "Thursday",
-    uv: 1520,
-    pv: 1108,
-    amt: 1100,
+    diff: 3,
+    res: 8,
+    init: 11,
   },
   {
     name: "Friday",
-    uv: 1400,
-    pv: 680,
-    amt: 1700,
+    diff: 0,
+    res: 5,
+    init: 5,
   },
   {
     name: "Saturday",
-    uv: 140,
-    pv: 680,
-    amt: 1700,
+    diff: -3,
+    res: 6,
+    init: 3,
   },
 ];
 
@@ -91,12 +91,12 @@ export default class RestStats extends PureComponent {
             <Legend />
             <Area
               type="monotone"
-              dataKey="amt"
+              dataKey="init"
               fill="#8884d8"
               stroke="#8884d8"
             />
-            <Bar dataKey="pv" barSize={50} fill="#413ea0" />
-            <Line type="monotone" dataKey="uv" stroke="#ff7300" />
+            <Bar dataKey="res" barSize={50} fill="#413ea0" />
+            <Line type="monotone" dataKey="diff" stroke="#ff7300" />
           </ComposedChart>
         </ResponsiveContainer>
       </WrapContainer>

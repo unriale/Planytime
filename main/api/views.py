@@ -15,6 +15,8 @@ from dateutil.parser import parse
 
 from django.db import connection
 
+import datetime
+
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
@@ -129,6 +131,73 @@ def get_color_events(request):
     user = request.user
 
     with connection.cursor() as cursor:
-        cursor.execute(f"SELECT \"colorTypeId\", COUNT(id) FROM main_event WHERE user_id={user.id} GROUP BY \"colorTypeId\"")
+        cursor.execute(
+            f"SELECT \"colorTypeId\", COUNT(id) FROM main_event WHERE user_id={user.id} GROUP BY \"colorTypeId\"")
         data = cursor.fetchall()
         return Response(data, status=200)
+
+
+def get_dates(request):
+    start_date = datetime.datetime.strptime(
+        request.data['startDate'][:10], '%Y-%m-%d').date()
+    end_date = datetime.datetime.strptime(
+        request.data['endDate'][:10], '%Y-%m-%d').date()
+    this_end_date = start_date
+    dates_arr = [str(start_date + datetime.timedelta(days=1))]
+
+    while str(end_date) != str(this_end_date):
+        this_end_date = this_end_date + datetime.timedelta(days=1)
+        dates_arr.append(str(this_end_date))
+
+    this_end_date = this_end_date + datetime.timedelta(days=1)
+    dates_arr.append(str(this_end_date))
+    return dates_arr
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def replan(request):
+    user = request.user
+
+    dates_arr = get_dates(request)
+    
+    data = ""
+    for date in dates_arr:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                f"SELECT * FROM main_event WHERE user_id={user.id} AND date='{date}' ORDER BY \"startTime\"")
+            data = cursor.fetchall()
+            if data:
+                new_data = [data[0]]
+                for i, plan in enumerate(data):
+                    if i + 1 < len(data):
+                        next_plan = data[i + 1]
+                        data[i+1] = compare_plans(plan, next_plan)
+                        new_data.append(compare_plans(plan, next_plan))
+                update_time_events(new_data)
+    return Response(data, status=200)
+
+
+def update_time_events(new_data):
+    for event in new_data:
+        Event.objects.filter(id=event[0]).update(
+            date=event[2],
+            startTime=event[3],
+            endTime=event[4]
+        )
+
+
+def compare_plans(first, second):
+    if first[4] >= second[3]:
+        date = datetime.date(1, 1, 1)
+        datetime1 = datetime.datetime.combine(date, second[4])
+        datetime2 = datetime.datetime.combine(date, second[3])
+        time_elapsed = datetime1 - datetime2
+        start_time_next = datetime.datetime.combine(
+            date, first[4]) + datetime.timedelta(minutes=15)
+        end_time_next = start_time_next + time_elapsed
+        new_second = (second[0], second[1], second[2], start_time_next.time(
+        ), end_time_next.time(), second[5], second[6], second[7])
+        return new_second
+    else:
+        return second

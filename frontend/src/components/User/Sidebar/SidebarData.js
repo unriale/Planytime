@@ -16,16 +16,6 @@ export const SidebarData = [
     icon: <ImIcons.ImStatsDots />,
   },
   {
-    title: "Team",
-    path: "/team",
-    icon: <AiIcons.AiOutlineTeam />,
-  },
-  {
-    title: "Support",
-    path: "/support",
-    icon: <MdIcons.MdOutlineContactSupport />,
-  },
-  {
     title: "Logout",
     path: "",
     icon: <RiIcons.RiLogoutBoxLine />,
