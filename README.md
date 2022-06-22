@@ -18,6 +18,8 @@
 ![](https://github.com/unriale/Planytime/blob/master/Gifs/stats.gif)
 </br></br>
 ![](https://github.com/unriale/Planytime/blob/master/Gifs/add_plan.gif)
+<br/><br/>
+![](https://github.com/unriale/Planytime/blob/master/Gifs/responsive_UI.gif)
 
 ## :earth_africa: Supported Browsers
 
