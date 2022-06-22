@@ -1,0 +1,24 @@
+# Planytime Website
+
+**A calendar website for personal time planning.**  
+
+
+
+##  What are the features❓
+
+* 📆 **Integration with Google Calendar.** 
+* 🔮 **Stats.** Get statistics about a number of plans per week and rest time between them
+* ☑️ **Plans.** See your plans with a due date & time directly in the calendar
+* 🖌️ **Color your plans.** Choose any color for your plan
+* 🔄 **Replan.** Replan your whole week just by choosing a date range
+
+## :earth_africa: Supported Browsers
+
+* Chrome/Chromium 76+
+* Edge 40+
+* Firefox 60+
+* Internet Explorer 11
+* Safari 12.1+
+
+## Run locally
+
