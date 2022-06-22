@@ -1,6 +1,7 @@
 # Planytime Website
 
-**A calendar website for personal time planning.**  
+**A calendar website for personal time planning.**  </br></br>
+![](https://github.com/unriale/Planytime/blob/master/Gifs/main_page.gif)
 
 
 
