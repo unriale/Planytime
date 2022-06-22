@@ -32,15 +32,22 @@
 ## Run locally
 In the main project directory create a file `.env` and add your own keys and passwords
 ```
+#Django secret key
 SECRET_KEY=
 DEBUG=
+
+#Database setup
 DB_NAME=
 DB_USER=
 DB_PASSWORD=
 DB_HOST=
 DB_PORT=
+
+#Backend and frontend urls
 REACT_APP_BASE_BACKEND_URL=
 REACT_APP_BASE_FRONTEND_URL=
+
+#Google Calendar setup
 REACT_APP_CLIENT_ID=
 REACT_APP_CLIENT_SECRET=
 REACT_APP_SCOPE=
