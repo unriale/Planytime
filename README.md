@@ -12,6 +12,10 @@
 * ☑️ **Plans.** See your plans with a due date & time directly in the calendar
 * 🖌️ **Color your plans.** Choose any color for your plan
 * 🔄 **Replan.** Replan your whole week just by choosing a date range
+* 📱  **Responsive UI.** You can use your tablet or phone
+
+## User Interface
+![](https://github.com/unriale/Planytime/blob/master/Gifs/stats.gif)
 
 ## :earth_africa: Supported Browsers
 
