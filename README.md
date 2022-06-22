@@ -16,6 +16,8 @@
 
 ## User Interface
 ![](https://github.com/unriale/Planytime/blob/master/Gifs/stats.gif)
+</br></br>
+![](https://github.com/unriale/Planytime/blob/master/Gifs/add_plan.gif)
 
 ## :earth_africa: Supported Browsers
 
@@ -26,4 +28,19 @@
 * Safari 12.1+
 
 ## Run locally
-
+In the main project directory create a file `.env` and add your own keys and passwords
+```
+SECRET_KEY=
+DEBUG=
+DB_NAME=
+DB_USER=
+DB_PASSWORD=
+DB_HOST=
+DB_PORT=
+REACT_APP_BASE_BACKEND_URL=
+REACT_APP_BASE_FRONTEND_URL=
+REACT_APP_CLIENT_ID=
+REACT_APP_CLIENT_SECRET=
+REACT_APP_SCOPE=
+REACT_APP_CALENDAR_URL=
+```
